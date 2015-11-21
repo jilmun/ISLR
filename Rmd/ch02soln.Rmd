@@ -1,0 +1,395 @@
+---
+title: "Chapter 2: Statistical Learning"
+author: "Solutions to Exercises"
+date: "November 19, 2015"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+***
+## CONCEPTUAL
+***
+
+>EXERCISE 1:
+
+__Part a)__ 
+
+flexible learning method would perform __better__ because sample size is large enough to fit more parameters and small number of predictors limits model variance
+
+__Part b)__ 
+
+flexible learning method would perform __worse__ because it would be more likely to overfit
+
+__Part c)__ 
+
+flexible learning method would perform __better__ because it is less restrictive on the shape of fit
+
+__Part d)__ 
+
+flexible learning method would perform __worse__ because it would be more likely to overfit
+
+***
+
+>EXERCISE 2:
+
+__Part a)__ 
+
+* regression
+* inference
+* n = 500 observations
+* p = 3 variables
+    * profit
+    * number of employees
+    * industry
+
+__Part b)__ 
+
+* classification
+* prediction
+* n = 20 observations
+* p = 13 variables
+    * price charged
+    * marketing budget
+    * competition price
+    * _ten other variables_
+
+__Part c)__ 
+
+* regression
+* inference
+* n = 52 weekly observations
+* p = 3 variables
+    * change in the US market
+    * change in the British market
+    * change in the German market
+
+***
+
+>EXERCISE 3:
+
+__Part a)__
+
+* `red` = test error 
+* `orange` = estimator variance 
+* `green` = model bias 
+* `gray` = irreducible error 
+* `blue` = train error 
+
+```{r, echo=FALSE}
+curve(82*x, from=0, to=10, xlab="flexibility", ylab="MSE", col="white")  
+curve(300*cos(x/3)+500+x^3/3, add=TRUE, col="red", lwd=2)  # test error
+curve(x^3/3, add=TRUE, col="orange", lwd=2)                # variance
+curve(0*x+250, add=TRUE, col="gray", lwd=2)                # irreducible error
+curve(300*cos(x/3)+350, add=TRUE, col="green", lwd=2)      # bias
+curve(225*cos(x/3)+450, add=TRUE, col="blue", lwd=2)       # train error
+```
+
+__Part b)__
+
+* `variance` will increase with higher flexibility because changing data points will have more effect on the parameter estimates
+* `bias` will decrease with higher flexibility because there are fewer assumptions made about the shape of the fit
+* `test error` will have a U-shaped curve because it reflects the interaction between `variance` and `bias`
+* `irreducible error` is the same regardless of model fit
+* `train error` will always decrease with more model flexibility because an overfit model will produce lower MSE on the training data
+
+***
+
+>EXERCISE 4:
+
+__Part a)__
+
+* win/loss in basketball game
+    * Response: team win or loss
+    * Predictors: team strength/weakness, opponent strength/weakness, player injuries
+    * Goal: both prediction to know win or loss and inference to understand what factors influence win/loss result 
+* renew/non-renew insurance policy
+    * Response: policyholder renew or cancel
+    * Predictors: price change, customer elasticity, competitor price 
+* type of particle
+    * Response: particle type
+    * Predictors: image, size, shape, time
+
+__Part b)__
+
+* fantasy points
+    * Response: player fantasy points for next game
+    * Predictors: past points, injuries, teammates, opponents
+* salary for job posting
+    * Response: salary
+    * Predictors: position title, location, company/peer salaries
+* insurance costs
+    * Response: loss cost for policyholder
+    * Predictors: experience losses, customer behavior stats
+
+__Part c)__
+
+* types of shoppers
+* commodity groups
+* personality styles
+
+***
+
+>EXERCISE 5:
+
+Advantages of a very flexible model include better fit to data and fewer prior assumptions. Disadvantages are hard to interpret and prone to overfitting. 
+
+A more flexible approach might be preferred is the underlying data is very complex (simple linear fit doesn't suffice) or if we mainly care about the result and not inference. A less flexible model is preferred is the underlying data has a simple shape or if inference is important.
+
+***
+
+>EXERCISE 6:
+
+For parametric methods, we make an assumption about the shape of the underlying data, select a model form, and fit the data to our selected form. The advantage here is that we can incorporate any prior/expert knowledge and don't tend to have too many parameters that need to be fit. To the extent that our prior/expert assumptions are wrong, then that would be a disadvantage.
+
+Non-parametric methods don't make explicit assumptions on the shape of the data. This can have the advantage of not needing to make an assumption on the form of the function and can more accurately fit a wider range of shapes for the underlying data. The key disadvantage is that they need a large number of observations to fit an accurate estimate.
+
+***
+
+>EXERCISE 7:
+
+__Part a)__
+
+```{r}
+obs1 <- c(0, 3, 0)
+obs2 <- c(2, 0, 0)
+obs3 <- c(0, 1, 3)
+obs4 <- c(0, 1, 2)
+obs5 <- c(-1, 0, 1)
+obs6 <- c(1, 1, 1)
+obs0 <- c(0, 0, 0)
+
+(dist1 <- sqrt(sum((obs1-obs0)^2)) )
+(dist2 <- sqrt(sum((obs2-obs0)^2)) )
+(dist3 <- sqrt(sum((obs3-obs0)^2)) )
+(dist4 <- sqrt(sum((obs4-obs0)^2)) )
+(dist5 <- sqrt(sum((obs5-obs0)^2)) )
+(dist6 <- sqrt(sum((obs6-obs0)^2)) )
+```
+
+__Part b)__
+
+* closest 1 neighbor is obs5 
+* prediction = __Green__
+
+__Part c)__
+
+* closest 3 neighbors are obs5, obs6, obs2 
+* prediction = __Red__
+
+__Part d)__
+
+best value of K should be smaller to be able to capture more of the non-linear decision boundary
+
+***
+## APPLIED
+***
+
+>EXERCISE 8:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(College)
+str(College)
+```
+
+__Part b)__
+
+```{r, eval=FALSE}
+# these steps were already taken on College data in the ISLR package
+fix(College)  # pops up table in window
+rownames(College) <- College[,1]  # set row names
+College <- College[,-1]  # drop first col
+```
+
+__Part c)__
+
+```{r}
+# i.
+summary(College)
+# ii.
+pairs(College[,1:10])
+# iii.
+boxplot(Outstate~Private, data=College, xlab="Private", ylab="Outstate")
+# iv.
+Elite <- rep("No", nrow(College))
+Elite[College$Top10perc>50] <- "Yes"
+College <- data.frame(College, Elite)
+summary(College)  # 78 Elite
+boxplot(Outstate~Elite, data=College, xlab="Elite", ylab="Outstate")
+# v. 
+par(mfrow=c(2,2))
+hist(College$Apps, breaks=50, xlim=c(0,25000), main="Apps")
+hist(College$Enroll, breaks=25, main="Enroll")
+hist(College$Expend, breaks=25, main="Expend")
+hist(College$Outstate, main="Outstate")
+# vi.
+
+```
+
+***
+
+>EXERCISE 9:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Auto)
+str(Auto)
+```
+
+* quantitative: _mpg, cylinders (can treat as qual too), displacement, horsepower, weight, acceleration, year_
+* qualitative: _origin, name_
+
+__Part b)__
+
+```{r}
+range(Auto$mpg)
+range(Auto$cylinders)
+range(Auto$displacement)
+range(Auto$horsepower)
+range(Auto$weight)
+range(Auto$acceleration)
+range(Auto$year)
+```
+
+__Part c)__
+
+```{r}
+sapply(Auto[,1:7], mean)
+sapply(Auto[,1:7], sd)
+```
+
+__Part d)__
+
+```{r}
+# create temp matrix for numeric columns
+tmp <- Auto[,-(8:9)]   # drop origin, name
+tmp <- tmp[-(10:85),]  # drop rows
+sapply(tmp, range)
+sapply(tmp, mean)
+sapply(tmp, sd)
+```
+
+__Part e)__
+
+```{r}
+pairs(Auto[,1:7])
+```
+
+* `mpg` is negatively correlated with `cylinders`, `displacement`, `horsepower`, and `weight`
+* `horsepower` is negatively correlated with `weight`
+* `mpg` mostly increases for newer model years
+
+__Part f)__
+
+yes, the plots show that there are relationships between `mpg` and other variables in the data set
+
+***
+
+>EXERCISE 10:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+require(MASS)
+data(Boston)
+str(Boston)  # 506 rows, 14 cols
+```
+
+* data set includes 506 rows and 14 columns
+    * rows represent observations for each town 
+    * columns represent features
+
+__Part b)__
+
+```{r}
+pairs(Boston)
+```
+
+relationship between crime rate per capita and other variables don't seem to be linear
+
+__Part c)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ggplot2)
+require(reshape2)
+
+# plot each feature against crim rate
+bosmelt <- melt(Boston, id="crim")
+ggplot(bosmelt, aes(x=value, y=crim)) +
+  facet_wrap(~variable, scales="free") + 
+  geom_point()
+(corrmatrix <- cor(Boston, use="complete.obs")[1,])
+corrmatrix[corrmatrix > 0.5 | corrmatrix < -0.5][-1]
+```
+
+* some correlations with each variable, except chas
+* crim rates seem to spike within certain zones
+    * when `rad` is > 20
+    * when `tax` is between 600 and 700
+    * when `zn` is close to 0
+    * etc.
+* negative correlations with `dis`, `medv` and maybe `black`
+
+__Part d)__
+
+```{r}
+require(ggplot2)
+g <- ggplot(Boston, aes(x=1:nrow(Boston), y=crim))
+g + geom_point()
+g <- ggplot(Boston, aes(x=1:nrow(Boston), y=tax))
+g + geom_point()
+g <- ggplot(Boston, aes(x=1:nrow(Boston), y=ptratio))
+g + geom_point()
+```
+
+* definitely outliers for `crim` and `tax`
+* no clear outlier for `ptratio`
+
+__Part e)__
+
+```{r}
+table(Boston$chas)  # 35 towns
+```
+
+__Part f)__
+
+```{r}
+median(Boston$ptratio)  # 19.05
+```
+
+
+__Part g)__
+
+```{r}
+# there are two towns with lowest medv value of 5
+(seltown <- Boston[Boston$medv == min(Boston$medv),])
+# overall quartiles and range of predictors
+sapply(Boston, quantile)
+```
+
+* `age`, `rad` at max
+* `crim`, `indus`, `nox`, `tax`, `ptratio`, `lstat` at or above 75th percentile
+* low for `zn`, `rm`, `dis`
+
+__Part h)__
+
+```{r}
+# count of towns
+nrow(Boston[Boston$rm > 7,])  # 64 with > 7 rooms
+nrow(Boston[Boston$rm > 8,])  # 13 with > 8 rooms
+
+# row 1: mean for towns with > 8 rooms per dwelling
+# row 2: median for all towns
+rbind(sapply(Boston[Boston$rm > 8,], mean), sapply(Boston, median))
+```
+
+* crim rates are higher (almost 3X)
+* higher proportion of 25K sq ft lots
+* much lower `lstat` value
+* higher `medv` value
