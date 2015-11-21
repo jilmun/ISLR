@@ -1,3 +1,3 @@
 # ISLR Solutions to Exercises
 
-saving .html files for website reference links
+[Web link http://jjwesner.github.io/ISLR](http://jjwesner.github.io/ISLR)
