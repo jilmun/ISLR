@@ -1,7 +1,7 @@
 ---
 title: "Chapter 5: Resampling Methods"
 author: "Solutions to Exercises"
-date: "January 15, 2016"
+date: "January 18, 2016"
 output: 
   html_document: 
     keep_md: yes
@@ -13,6 +13,17 @@ output:
 
 >EXERCISE 1:
 
+$$ Var(\alpha X + (1-\alpha)Y) \\
+= Var(\alpha X) + Var((1-\alpha)Y) +2 Cov(\alpha X, (1-\alpha)Y) \\
+= \alpha^2 \sigma_X^2 + (1-\alpha)^2 \sigma_Y^2 + 2 \alpha (1-\alpha) \sigma_{XY} \\
+= \alpha^2 \sigma_X^2 + (1+\alpha^2-2\alpha) \sigma_Y^2 + (2\alpha - 2\alpha^2) \sigma_{XY} \\
+= \alpha^2 \sigma_X^2 + \sigma_Y^2+\alpha^2\sigma_Y^2-2\alpha\sigma_Y^2 + 2\alpha \sigma_{XY} - 2\alpha^2 \sigma_{XY} $$
+
+$$ \frac{\partial }{\partial \alpha}: 2\alpha\sigma_X^2 + 0 + 2\alpha\sigma_Y^2 - 2\sigma_Y^2 + 2\sigma_{XY} - 4\alpha\sigma_{XY} = 0 $$
+
+$$ (2\sigma_X^2 + 2\sigma_Y^2 - 4\sigma_{XY}) \alpha = 2\sigma_Y^2 - 2\sigma_{XY} $$
+
+$$ \alpha = \frac{\sigma_Y^2 - \sigma_{XY}}{\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY}} $$
 
 ***
 
@@ -20,27 +31,52 @@ output:
 
 __Part a)__
 
+Probability is equal to not selecting that one observation out of all observations: $\frac{n-1}{n}$
 
 __Part b)__
 
+Because bootstrap uses replacement, the probability is the same as Part a: $\frac{n-1}{n}$
 
 __Part c)__
 
+Probability of not selecting the *j*th observation is the same for each selection. After $n$ selections, the probability of never selecting the *j*th observation is: $(\frac{n-1}{n})^n = (1-\frac{1}{n})^n$
 
 __Part d)__
 
+```{r}
+1-(1-1/5)^5
+```
 
 __Part e)__
 
+```{r}
+1-(1-1/100)^100
+```
 
 __Part f)__
 
+```{r}
+1-(1-1/10000)^10000
+```
 
 __Part g)__
 
+```{r}
+plot(1:10000, 1-(1-1/1:10000)^(1:10000))
+```
+
+Probability pretty quickly reaches mid-60%
 
 __Part h)__
 
+```{r}
+store <- rep(NA, 10000)
+for (i in 1:10000)
+  store[i] <- sum(sample(1:100, rep=TRUE)==4) > 0
+mean(store)
+```
+
+The resulting fraction of 10,000 bootstrap samples that have the 4th observation is close to our predicted probability of 1-(1-1/100)^100 = 63.4%
 
 ***
 
@@ -48,14 +84,18 @@ __Part h)__
 
 __Part a)__
 
+From page 181 in the text, the k-fold CV approach "involves randomly dividing the set of observations into k groups, or folds, of approximately equal size. The first fold is treated as a validation set, and the method is fit on the remaining k-1 folds. The mean squared error, MSE, is then computed on the observations in the held-out fold. This procedure is repeated k times."
 
 __Part b)__
 
+* Compared to the validation set approach, k-fold CV has less variance but more bias
+* Compared to LOOCV approach, k-fold CV has more variance but less bias
 
 ***
 
 >EXERCISE 4:
 
+We can use the bootstrap method to sample with replacement from our dataset and estimate Y's from each sample. With the results of different predicted Y values, we can then estimate the standard deviation of our prediction. 
 
 ***
 ## APPLIED
@@ -65,15 +105,63 @@ __Part b)__
 
 __Part a)__
 
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Default)
+set.seed(1)
+fit1 <- glm(default ~ income + balance, data=Default, family=binomial)
+summary(fit1)
+```
 
 __Part b)__
 
+```{r}
+set.seed(1)
+train <- sample(nrow(Default), nrow(Default)*0.5)
+fit2 <- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 <- predict(fit2, Default[-train,], type="response")
+pred2 <- ifelse(prob2 > 0.5, "Yes", "No")
+table(pred2, Default[-train,]$default)
+mean(Default[-train,]$default != pred2)  # test error
+```
 
 __Part c)__
 
+```{r}
+set.seed(2)  # Repeat 1
+train <- sample(nrow(Default), nrow(Default)*0.5)
+fit2 <- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 <- predict(fit2, Default[-train,], type="response")
+pred2 <- ifelse(prob2 > 0.5, "Yes", "No")
+mean(Default[-train,]$default != pred2)  # test error
+set.seed(3)  # Repeat 2
+train <- sample(nrow(Default), nrow(Default)*0.5)
+fit2 <- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 <- predict(fit2, Default[-train,], type="response")
+pred2 <- ifelse(prob2 > 0.5, "Yes", "No")
+mean(Default[-train,]$default != pred2)  # test error
+set.seed(4)  # Repeat 3
+train <- sample(nrow(Default), nrow(Default)*0.5)
+fit2 <- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 <- predict(fit2, Default[-train,], type="response")
+pred2 <- ifelse(prob2 > 0.5, "Yes", "No")
+mean(Default[-train,]$default != pred2)  # test error
+```
+
+The test error seems consistent around 2.5% (variance is not large)
 
 __Part d)__
 
+```{r}
+set.seed(1)
+train <- sample(nrow(Default), nrow(Default)*0.5)
+fit3 <- glm(default ~ income + balance + student, data=Default, family=binomial, subset=train)
+prob3 <- predict(fit3, Default[-train,], type="response")
+pred3 <- ifelse(prob3 > 0.5, "Yes", "No")
+mean(Default[-train,]$default != pred3)  # test error
+```
+
+Test error with the `student` feature included is similar to without including `student` (no significant reduction)
 
 ***
 
@@ -81,15 +169,39 @@ __Part d)__
 
 __Part a)__
 
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Default)
+set.seed(1)
+fit1 <- glm(default ~ income + balance, data=Default, family=binomial)
+summary(fit1)
+```
+
+Estimated standard error is 0.000004985 for `income` and 0.0002274 for `balance`
 
 __Part b)__
 
+```{r}
+set.seed(1)
+boot.fn <- function(df, trainid) {
+  return(coef(glm(default ~ income + balance, data=df, family=binomial, subset=trainid)))
+}
+boot.fn(Default, 1:nrow(Default))  # check match with summary
+```
 
 __Part c)__
 
+```{r}
+require(boot)
+boot(Default, boot.fn, R=100)
+```
 
 __Part d)__
 
+Standard error estimates are pretty close using glm summary function versus bootstrap with R=100
+
+* `income`: 4.985e-06 with glm summary, 4.128e-06 using bootstrap
+* `balance`: 2.274e-04 with glm summary, 2.106e-04 using bootstrap
 
 ***
 
@@ -97,18 +209,51 @@ __Part d)__
 
 __Part a)__
 
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Weekly)
+set.seed(1)
+fit1 <- glm(Direction ~ Lag1 + Lag2, data=Weekly, family=binomial)
+summary(fit1)
+```
 
 __Part b)__
 
+```{r, warning=FALSE, message=FALSE}
+set.seed(1)
+fit2 <- glm(Direction ~ Lag1 + Lag2, data=Weekly, family=binomial, subset=2:nrow(Weekly))
+summary(fit2)
+```
 
 __Part c)__
 
+```{r}
+ifelse(predict(fit2, Weekly[1,], type="response")>0.5, "Up", "Down")
+Weekly[1,]$Direction
+```
+
+The first observation was incorrectly classified (predicted Up, actually Down)
 
 __Part d)__
 
+```{r}
+set.seed(1)
+loocv.err <- rep(0,nrow(Weekly))
+for (i in 1:nrow(Weekly)) {
+  myfit <- glm(Direction ~ Lag1 + Lag2, data=Weekly[-i,], family=binomial)
+  mypred <- ifelse(predict(myfit, Weekly[1,], type="response")>0.5, "Up", "Down")
+  loocv.err[i] <- ifelse(Weekly[i,]$Direction==mypred, 0, 1)
+}
+str(loocv.err)
+```
 
 __Part e)__
 
+```{r}
+mean(loocv.err)
+```
+
+Estimated test error with LOOCV is 44.4%
 
 ***
 
@@ -116,21 +261,79 @@ __Part e)__
 
 __Part a)__
 
+```{r}
+set.seed(1)
+y <- rnorm(100)  # why is this needed?
+x <- rnorm(100)
+y <- x - 2*x^2 + rnorm(100)
+```
+
+$Y = X - 2X^2 + \epsilon$
+
+$n = 100$ observations
+
+$p = 2$ features
 
 __Part b)__
 
+```{r}
+plot(x, y)
+```
+
+Relationship between X and Y is quadratic
 
 __Part c)__
 
+```{r}
+set.seed(1)
+df <- data.frame(y, x, x2=x^2, x3=x^3, x4=x^4)
+fit1 <- glm(y ~ x, data=df)
+cv.err1 <- cv.glm(df, fit1)
+cv.err1$delta
+fit2 <- glm(y ~ x + x2, data=df)
+cv.err2 <- cv.glm(df, fit2)
+cv.err2$delta
+fit3 <- glm(y ~ x + x2 + x3, data=df)
+cv.err3 <- cv.glm(df, fit3)
+cv.err3$delta
+fit4 <- glm(y ~ x + x2 + x3 + x4, data=df)
+cv.err4 <- cv.glm(df, fit4)
+cv.err4$delta
+```
 
 __Part d)__
 
+```{r}
+set.seed(2)
+df <- data.frame(y, x, x2=x^2, x3=x^3, x4=x^4)
+fit1 <- glm(y ~ x, data=df)
+cv.err1 <- cv.glm(df, fit1)
+cv.err1$delta
+fit2 <- glm(y ~ x + x2, data=df)
+cv.err2 <- cv.glm(df, fit2)
+cv.err2$delta
+fit3 <- glm(y ~ x + x2 + x3, data=df)
+cv.err3 <- cv.glm(df, fit3)
+cv.err3$delta
+fit4 <- glm(y ~ x + x2 + x3 + x4, data=df)
+cv.err4 <- cv.glm(df, fit4)
+cv.err4$delta
+```
+
+Results are exactly the same because LOOCV predicts every observation using the all of the rest (no randomness involved)
 
 __Part e)__
 
+The quadratic model using $X$ and $X^2$ had the lowest error. This makes sense because the true model was generated using a quadratic formula
 
 __Part f)__
 
+```{r}
+fit0 <- lm(y ~ poly(x,4))
+summary(fit0)
+```
+
+Summary shows that only $X$ and $X^2$ are statistically significant predictors. This agrees with the LOOCV results that indicate using only $X$ and $X^2$ produces the best model.
 
 ***
 
@@ -138,24 +341,71 @@ __Part f)__
 
 __Part a)__
 
+```{r, warning=FALSE, message=FALSE}
+require(MASS)
+require(boot)
+data(Boston)
+(medv.mu <- mean(Boston$medv))
+```
 
 __Part b)__
 
+```{r}
+(medv.sd <- sd(Boston$medv)/sqrt(nrow(Boston)))
+```
 
 __Part c)__
 
+```{r}
+set.seed(1)
+mean.fn <- function(var, id) {
+  return(mean(var[id]))
+}
+(boot.res <- boot(Boston$medv, mean.fn, R=100))
+```
+
+Estimation from bootstrap with R=100 is 0.38, reasonably close to 0.41
 
 __Part d)__
 
+```{r}
+boot.res$t0 - 2*sd(boot.res$t)  # lower bound
+boot.res$t0 + 2*sd(boot.res$t)  # upper bound
+t.test(Boston$medv)
+```
 
 __Part e)__
 
+```{r}
+(medv.median <- median(Boston$medv))
+```
 
 __Part f)__
 
+```{r}
+set.seed(1)
+median.fn <- function(var, id) {
+  return(median(var[id]))
+}
+(boot.res <- boot(Boston$medv, median.fn, R=100))
+```
+
+Estimated standard error is 0.368
 
 __Part g)__
 
+```{r}
+(medv.mu10 <- quantile(Boston$medv, 0.1))
+```
 
 __Part h)__
 
+```{r}
+set.seed(1)
+quantile10.fn <- function(var, id) {
+  return(quantile(var[id], 0.1))
+}
+(boot.res <- boot(Boston$medv, quantile10.fn, R=100))
+```
+
+Estimated standard error is 0.499

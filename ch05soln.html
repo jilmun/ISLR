@@ -10,6 +10,7 @@
 
 <meta name="author" content="Solutions to Exercises" />
 
+<meta name="date" content="2016-01-18" />
 
 <title>Chapter 5: Resampling Methods</title>
 
@@ -63,7 +64,7 @@ img {
 <div id="header">
 <h1 class="title">Chapter 5: Resampling Methods</h1>
 <h4 class="author"><em>Solutions to Exercises</em></h4>
-<h4 class="date"><em>Targeting January 15, 2016</em></h4>
+<h4 class="date"><em>January 18, 2016</em></h4>
 </div>
 
 
@@ -74,28 +75,59 @@ img {
 <blockquote>
 <p>EXERCISE 1:</p>
 </blockquote>
+<p><span class="math">\[ Var(\alpha X + (1-\alpha)Y) \\
+= Var(\alpha X) + Var((1-\alpha)Y) +2 Cov(\alpha X, (1-\alpha)Y) \\
+= \alpha^2 \sigma_X^2 + (1-\alpha)^2 \sigma_Y^2 + 2 \alpha (1-\alpha) \sigma_{XY} \\
+= \alpha^2 \sigma_X^2 + (1+\alpha^2-2\alpha) \sigma_Y^2 + (2\alpha - 2\alpha^2) \sigma_{XY} \\
+= \alpha^2 \sigma_X^2 + \sigma_Y^2+\alpha^2\sigma_Y^2-2\alpha\sigma_Y^2 + 2\alpha \sigma_{XY} - 2\alpha^2 \sigma_{XY} \]</span></p>
+<p><span class="math">\[ \frac{\partial }{\partial \alpha}: 2\alpha\sigma_X^2 + 0 + 2\alpha\sigma_Y^2 - 2\sigma_Y^2 + 2\sigma_{XY} - 4\alpha\sigma_{XY} = 0 \]</span></p>
+<p><span class="math">\[ (2\sigma_X^2 + 2\sigma_Y^2 - 4\sigma_{XY}) \alpha = 2\sigma_Y^2 - 2\sigma_{XY} \]</span></p>
+<p><span class="math">\[ \alpha = \frac{\sigma_Y^2 - \sigma_{XY}}{\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY}} \]</span></p>
 <hr />
 <blockquote>
 <p>EXERCISE 2:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<p>Probability is equal to not selecting that one observation out of all observations: <span class="math">\(\frac{n-1}{n}\)</span></p>
 <p><strong>Part b)</strong></p>
+<p>Because bootstrap uses replacement, the probability is the same as Part a: <span class="math">\(\frac{n-1}{n}\)</span></p>
 <p><strong>Part c)</strong></p>
+<p>Probability of not selecting the <em>j</em>th observation is the same for each selection. After <span class="math">\(n\)</span> selections, the probability of never selecting the <em>j</em>th observation is: <span class="math">\((\frac{n-1}{n})^n = (1-\frac{1}{n})^n\)</span></p>
 <p><strong>Part d)</strong></p>
+<pre class="r"><code>1-(1-1/5)^5</code></pre>
+<pre><code>## [1] 0.67232</code></pre>
 <p><strong>Part e)</strong></p>
+<pre class="r"><code>1-(1-1/100)^100</code></pre>
+<pre><code>## [1] 0.6339677</code></pre>
 <p><strong>Part f)</strong></p>
+<pre class="r"><code>1-(1-1/10000)^10000</code></pre>
+<pre><code>## [1] 0.632139</code></pre>
 <p><strong>Part g)</strong></p>
+<pre class="r"><code>plot(1:10000, 1-(1-1/1:10000)^(1:10000))</code></pre>
+<p><img src="data:image/png;base64,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" /><br /> Probability pretty quickly reaches mid-60%</p>
 <p><strong>Part h)</strong></p>
+<pre class="r"><code>store &lt;- rep(NA, 10000)
+for (i in 1:10000)
+  store[i] &lt;- sum(sample(1:100, rep=TRUE)==4) &gt; 0
+mean(store)</code></pre>
+<pre><code>## [1] 0.6357</code></pre>
+<p>The resulting fraction of 10,000 bootstrap samples that have the 4th observation is close to our predicted probability of 1-(1-1/100)^100 = 63.4%</p>
 <hr />
 <blockquote>
 <p>EXERCISE 3:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<p>From page 181 in the text, the k-fold CV approach “involves randomly dividing the set of observations into k groups, or folds, of approximately equal size. The first fold is treated as a validation set, and the method is fit on the remaining k-1 folds. The mean squared error, MSE, is then computed on the observations in the held-out fold. This procedure is repeated k times.”</p>
 <p><strong>Part b)</strong></p>
+<ul>
+<li>Compared to the validation set approach, k-fold CV has less variance but more bias</li>
+<li>Compared to LOOCV approach, k-fold CV has more variance but less bias</li>
+</ul>
 <hr />
 <blockquote>
 <p>EXERCISE 4:</p>
 </blockquote>
+<p>We can use the bootstrap method to sample with replacement from our dataset and estimate Y’s from each sample. With the results of different predicted Y values, we can then estimate the standard deviation of our prediction.</p>
 <hr />
 </div>
 <div id="applied" class="section level2">
@@ -105,48 +137,401 @@ img {
 <p>EXERCISE 5:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<pre class="r"><code>require(ISLR)
+data(Default)
+set.seed(1)
+fit1 &lt;- glm(default ~ income + balance, data=Default, family=binomial)
+summary(fit1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = default ~ income + balance, family = binomial, 
+##     data = Default)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.4725  -0.1444  -0.0574  -0.0211   3.7245  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -1.154e+01  4.348e-01 -26.545  &lt; 2e-16 ***
+## income       2.081e-05  4.985e-06   4.174 2.99e-05 ***
+## balance      5.647e-03  2.274e-04  24.836  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 2920.6  on 9999  degrees of freedom
+## Residual deviance: 1579.0  on 9997  degrees of freedom
+## AIC: 1585
+## 
+## Number of Fisher Scoring iterations: 8</code></pre>
 <p><strong>Part b)</strong></p>
+<pre class="r"><code>set.seed(1)
+train &lt;- sample(nrow(Default), nrow(Default)*0.5)
+fit2 &lt;- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 &lt;- predict(fit2, Default[-train,], type=&quot;response&quot;)
+pred2 &lt;- ifelse(prob2 &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+table(pred2, Default[-train,]$default)</code></pre>
+<pre><code>##      
+## pred2   No  Yes
+##   No  4805  115
+##   Yes   28   52</code></pre>
+<pre class="r"><code>mean(Default[-train,]$default != pred2)  # test error</code></pre>
+<pre><code>## [1] 0.0286</code></pre>
 <p><strong>Part c)</strong></p>
+<pre class="r"><code>set.seed(2)  # Repeat 1
+train &lt;- sample(nrow(Default), nrow(Default)*0.5)
+fit2 &lt;- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 &lt;- predict(fit2, Default[-train,], type=&quot;response&quot;)
+pred2 &lt;- ifelse(prob2 &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+mean(Default[-train,]$default != pred2)  # test error</code></pre>
+<pre><code>## [1] 0.0276</code></pre>
+<pre class="r"><code>set.seed(3)  # Repeat 2
+train &lt;- sample(nrow(Default), nrow(Default)*0.5)
+fit2 &lt;- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 &lt;- predict(fit2, Default[-train,], type=&quot;response&quot;)
+pred2 &lt;- ifelse(prob2 &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+mean(Default[-train,]$default != pred2)  # test error</code></pre>
+<pre><code>## [1] 0.0248</code></pre>
+<pre class="r"><code>set.seed(4)  # Repeat 3
+train &lt;- sample(nrow(Default), nrow(Default)*0.5)
+fit2 &lt;- glm(default ~ income + balance, data=Default, family=binomial, subset=train)
+prob2 &lt;- predict(fit2, Default[-train,], type=&quot;response&quot;)
+pred2 &lt;- ifelse(prob2 &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+mean(Default[-train,]$default != pred2)  # test error</code></pre>
+<pre><code>## [1] 0.0262</code></pre>
+<p>The test error seems consistent around 2.5% (variance is not large)</p>
 <p><strong>Part d)</strong></p>
+<pre class="r"><code>set.seed(1)
+train &lt;- sample(nrow(Default), nrow(Default)*0.5)
+fit3 &lt;- glm(default ~ income + balance + student, data=Default, family=binomial, subset=train)
+prob3 &lt;- predict(fit3, Default[-train,], type=&quot;response&quot;)
+pred3 &lt;- ifelse(prob3 &gt; 0.5, &quot;Yes&quot;, &quot;No&quot;)
+mean(Default[-train,]$default != pred3)  # test error</code></pre>
+<pre><code>## [1] 0.0288</code></pre>
+<p>Test error with the <code>student</code> feature included is similar to without including <code>student</code> (no significant reduction)</p>
 <hr />
 <blockquote>
 <p>EXERCISE 6:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<pre class="r"><code>require(ISLR)
+data(Default)
+set.seed(1)
+fit1 &lt;- glm(default ~ income + balance, data=Default, family=binomial)
+summary(fit1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = default ~ income + balance, family = binomial, 
+##     data = Default)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.4725  -0.1444  -0.0574  -0.0211   3.7245  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -1.154e+01  4.348e-01 -26.545  &lt; 2e-16 ***
+## income       2.081e-05  4.985e-06   4.174 2.99e-05 ***
+## balance      5.647e-03  2.274e-04  24.836  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 2920.6  on 9999  degrees of freedom
+## Residual deviance: 1579.0  on 9997  degrees of freedom
+## AIC: 1585
+## 
+## Number of Fisher Scoring iterations: 8</code></pre>
+<p>Estimated standard error is 0.000004985 for <code>income</code> and 0.0002274 for <code>balance</code></p>
 <p><strong>Part b)</strong></p>
+<pre class="r"><code>set.seed(1)
+boot.fn &lt;- function(df, trainid) {
+  return(coef(glm(default ~ income + balance, data=df, family=binomial, subset=trainid)))
+}
+boot.fn(Default, 1:nrow(Default))  # check match with summary</code></pre>
+<pre><code>##   (Intercept)        income       balance 
+## -1.154047e+01  2.080898e-05  5.647103e-03</code></pre>
 <p><strong>Part c)</strong></p>
+<pre class="r"><code>require(boot)</code></pre>
+<pre><code>## Loading required package: boot</code></pre>
+<pre class="r"><code>boot(Default, boot.fn, R=100)</code></pre>
+<pre><code>## 
+## ORDINARY NONPARAMETRIC BOOTSTRAP
+## 
+## 
+## Call:
+## boot(data = Default, statistic = boot.fn, R = 100)
+## 
+## 
+## Bootstrap Statistics :
+##          original        bias     std. error
+## t1* -1.154047e+01  9.699111e-02 4.101121e-01
+## t2*  2.080898e-05  6.715005e-08 4.127740e-06
+## t3*  5.647103e-03 -5.733883e-05 2.105660e-04</code></pre>
 <p><strong>Part d)</strong></p>
+<p>Standard error estimates are pretty close using glm summary function versus bootstrap with R=100</p>
+<ul>
+<li><code>income</code>: 4.985e-06 with glm summary, 4.128e-06 using bootstrap</li>
+<li><code>balance</code>: 2.274e-04 with glm summary, 2.106e-04 using bootstrap</li>
+</ul>
 <hr />
 <blockquote>
 <p>EXERCISE 7:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<pre class="r"><code>require(ISLR)
+data(Weekly)
+set.seed(1)
+fit1 &lt;- glm(Direction ~ Lag1 + Lag2, data=Weekly, family=binomial)
+summary(fit1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Direction ~ Lag1 + Lag2, family = binomial, data = Weekly)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -1.623  -1.261   1.001   1.083   1.506  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  0.22122    0.06147   3.599 0.000319 ***
+## Lag1        -0.03872    0.02622  -1.477 0.139672    
+## Lag2         0.06025    0.02655   2.270 0.023232 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1496.2  on 1088  degrees of freedom
+## Residual deviance: 1488.2  on 1086  degrees of freedom
+## AIC: 1494.2
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
 <p><strong>Part b)</strong></p>
+<pre class="r"><code>set.seed(1)
+fit2 &lt;- glm(Direction ~ Lag1 + Lag2, data=Weekly, family=binomial, subset=2:nrow(Weekly))
+summary(fit2)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Direction ~ Lag1 + Lag2, family = binomial, data = Weekly, 
+##     subset = 2:nrow(Weekly))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6258  -1.2617   0.9999   1.0819   1.5071  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  0.22324    0.06150   3.630 0.000283 ***
+## Lag1        -0.03843    0.02622  -1.466 0.142683    
+## Lag2         0.06085    0.02656   2.291 0.021971 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1494.6  on 1087  degrees of freedom
+## Residual deviance: 1486.5  on 1085  degrees of freedom
+## AIC: 1492.5
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
 <p><strong>Part c)</strong></p>
+<pre class="r"><code>ifelse(predict(fit2, Weekly[1,], type=&quot;response&quot;)&gt;0.5, &quot;Up&quot;, &quot;Down&quot;)</code></pre>
+<pre><code>##    1 
+## &quot;Up&quot;</code></pre>
+<pre class="r"><code>Weekly[1,]$Direction</code></pre>
+<pre><code>## [1] Down
+## Levels: Down Up</code></pre>
+<p>The first observation was incorrectly classified (predicted Up, actually Down)</p>
 <p><strong>Part d)</strong></p>
+<pre class="r"><code>set.seed(1)
+loocv.err &lt;- rep(0,nrow(Weekly))
+for (i in 1:nrow(Weekly)) {
+  myfit &lt;- glm(Direction ~ Lag1 + Lag2, data=Weekly[-i,], family=binomial)
+  mypred &lt;- ifelse(predict(myfit, Weekly[1,], type=&quot;response&quot;)&gt;0.5, &quot;Up&quot;, &quot;Down&quot;)
+  loocv.err[i] &lt;- ifelse(Weekly[i,]$Direction==mypred, 0, 1)
+}
+str(loocv.err)</code></pre>
+<pre><code>##  num [1:1089] 1 1 0 0 0 1 0 0 0 1 ...</code></pre>
 <p><strong>Part e)</strong></p>
+<pre class="r"><code>mean(loocv.err)</code></pre>
+<pre><code>## [1] 0.4444444</code></pre>
+<p>Estimated test error with LOOCV is 44.4%</p>
 <hr />
 <blockquote>
 <p>EXERCISE 8:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<pre class="r"><code>set.seed(1)
+y &lt;- rnorm(100)  # why is this needed?
+x &lt;- rnorm(100)
+y &lt;- x - 2*x^2 + rnorm(100)</code></pre>
+<p><span class="math">\(Y = X - 2X^2 + \epsilon\)</span></p>
+<p><span class="math">\(n = 100\)</span> observations</p>
+<p><span class="math">\(p = 2\)</span> features</p>
 <p><strong>Part b)</strong></p>
+<pre class="r"><code>plot(x, y)</code></pre>
+<p><img src="data:image/png;base64,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" /><br /> Relationship between X and Y is quadratic</p>
 <p><strong>Part c)</strong></p>
+<pre class="r"><code>set.seed(1)
+df &lt;- data.frame(y, x, x2=x^2, x3=x^3, x4=x^4)
+fit1 &lt;- glm(y ~ x, data=df)
+cv.err1 &lt;- cv.glm(df, fit1)
+cv.err1$delta</code></pre>
+<pre><code>## [1] 5.890979 5.888812</code></pre>
+<pre class="r"><code>fit2 &lt;- glm(y ~ x + x2, data=df)
+cv.err2 &lt;- cv.glm(df, fit2)
+cv.err2$delta</code></pre>
+<pre><code>## [1] 1.086596 1.086326</code></pre>
+<pre class="r"><code>fit3 &lt;- glm(y ~ x + x2 + x3, data=df)
+cv.err3 &lt;- cv.glm(df, fit3)
+cv.err3$delta</code></pre>
+<pre><code>## [1] 1.102585 1.102227</code></pre>
+<pre class="r"><code>fit4 &lt;- glm(y ~ x + x2 + x3 + x4, data=df)
+cv.err4 &lt;- cv.glm(df, fit4)
+cv.err4$delta</code></pre>
+<pre><code>## [1] 1.114772 1.114334</code></pre>
 <p><strong>Part d)</strong></p>
+<pre class="r"><code>set.seed(2)
+df &lt;- data.frame(y, x, x2=x^2, x3=x^3, x4=x^4)
+fit1 &lt;- glm(y ~ x, data=df)
+cv.err1 &lt;- cv.glm(df, fit1)
+cv.err1$delta</code></pre>
+<pre><code>## [1] 5.890979 5.888812</code></pre>
+<pre class="r"><code>fit2 &lt;- glm(y ~ x + x2, data=df)
+cv.err2 &lt;- cv.glm(df, fit2)
+cv.err2$delta</code></pre>
+<pre><code>## [1] 1.086596 1.086326</code></pre>
+<pre class="r"><code>fit3 &lt;- glm(y ~ x + x2 + x3, data=df)
+cv.err3 &lt;- cv.glm(df, fit3)
+cv.err3$delta</code></pre>
+<pre><code>## [1] 1.102585 1.102227</code></pre>
+<pre class="r"><code>fit4 &lt;- glm(y ~ x + x2 + x3 + x4, data=df)
+cv.err4 &lt;- cv.glm(df, fit4)
+cv.err4$delta</code></pre>
+<pre><code>## [1] 1.114772 1.114334</code></pre>
+<p>Results are exactly the same because LOOCV predicts every observation using the all of the rest (no randomness involved)</p>
 <p><strong>Part e)</strong></p>
+<p>The quadratic model using <span class="math">\(X\)</span> and <span class="math">\(X^2\)</span> had the lowest error. This makes sense because the true model was generated using a quadratic formula</p>
 <p><strong>Part f)</strong></p>
+<pre class="r"><code>fit0 &lt;- lm(y ~ poly(x,4))
+summary(fit0)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ poly(x, 4))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.8914 -0.5244  0.0749  0.5932  2.7796 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -1.8277     0.1041 -17.549   &lt;2e-16 ***
+## poly(x, 4)1   2.3164     1.0415   2.224   0.0285 *  
+## poly(x, 4)2 -21.0586     1.0415 -20.220   &lt;2e-16 ***
+## poly(x, 4)3  -0.3048     1.0415  -0.293   0.7704    
+## poly(x, 4)4  -0.4926     1.0415  -0.473   0.6373    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.041 on 95 degrees of freedom
+## Multiple R-squared:  0.8134, Adjusted R-squared:  0.8055 
+## F-statistic: 103.5 on 4 and 95 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Summary shows that only <span class="math">\(X\)</span> and <span class="math">\(X^2\)</span> are statistically significant predictors. This agrees with the LOOCV results that indicate using only <span class="math">\(X\)</span> and <span class="math">\(X^2\)</span> produces the best model.</p>
 <hr />
 <blockquote>
 <p>EXERCISE 9:</p>
 </blockquote>
 <p><strong>Part a)</strong></p>
+<pre class="r"><code>require(MASS)
+require(boot)
+data(Boston)
+(medv.mu &lt;- mean(Boston$medv))</code></pre>
+<pre><code>## [1] 22.53281</code></pre>
 <p><strong>Part b)</strong></p>
+<pre class="r"><code>(medv.sd &lt;- sd(Boston$medv)/sqrt(nrow(Boston)))</code></pre>
+<pre><code>## [1] 0.4088611</code></pre>
 <p><strong>Part c)</strong></p>
+<pre class="r"><code>set.seed(1)
+mean.fn &lt;- function(var, id) {
+  return(mean(var[id]))
+}
+(boot.res &lt;- boot(Boston$medv, mean.fn, R=100))</code></pre>
+<pre><code>## 
+## ORDINARY NONPARAMETRIC BOOTSTRAP
+## 
+## 
+## Call:
+## boot(data = Boston$medv, statistic = mean.fn, R = 100)
+## 
+## 
+## Bootstrap Statistics :
+##     original      bias    std. error
+## t1* 22.53281 -0.04836957   0.3815554</code></pre>
+<p>Estimation from bootstrap with R=100 is 0.38, reasonably close to 0.41</p>
 <p><strong>Part d)</strong></p>
+<pre class="r"><code>boot.res$t0 - 2*sd(boot.res$t)  # lower bound</code></pre>
+<pre><code>## [1] 21.7697</code></pre>
+<pre class="r"><code>boot.res$t0 + 2*sd(boot.res$t)  # upper bound</code></pre>
+<pre><code>## [1] 23.29592</code></pre>
+<pre class="r"><code>t.test(Boston$medv)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  Boston$medv
+## t = 55.111, df = 505, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  21.72953 23.33608
+## sample estimates:
+## mean of x 
+##  22.53281</code></pre>
 <p><strong>Part e)</strong></p>
+<pre class="r"><code>(medv.median &lt;- median(Boston$medv))</code></pre>
+<pre><code>## [1] 21.2</code></pre>
 <p><strong>Part f)</strong></p>
+<pre class="r"><code>set.seed(1)
+median.fn &lt;- function(var, id) {
+  return(median(var[id]))
+}
+(boot.res &lt;- boot(Boston$medv, median.fn, R=100))</code></pre>
+<pre><code>## 
+## ORDINARY NONPARAMETRIC BOOTSTRAP
+## 
+## 
+## Call:
+## boot(data = Boston$medv, statistic = median.fn, R = 100)
+## 
+## 
+## Bootstrap Statistics :
+##     original  bias    std. error
+## t1*     21.2  -0.026   0.3683488</code></pre>
+<p>Estimated standard error is 0.368</p>
 <p><strong>Part g)</strong></p>
+<pre class="r"><code>(medv.mu10 &lt;- quantile(Boston$medv, 0.1))</code></pre>
+<pre><code>##   10% 
+## 12.75</code></pre>
 <p><strong>Part h)</strong></p>
+<pre class="r"><code>set.seed(1)
+quantile10.fn &lt;- function(var, id) {
+  return(quantile(var[id], 0.1))
+}
+(boot.res &lt;- boot(Boston$medv, quantile10.fn, R=100))</code></pre>
+<pre><code>## 
+## ORDINARY NONPARAMETRIC BOOTSTRAP
+## 
+## 
+## Call:
+## boot(data = Boston$medv, statistic = quantile10.fn, R = 100)
+## 
+## 
+## Bootstrap Statistics :
+##     original  bias    std. error
+## t1*    12.75 -0.0985   0.4988094</code></pre>
+<p>Estimated standard error is 0.499</p>
 </div>
 
 
