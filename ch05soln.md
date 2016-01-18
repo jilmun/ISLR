@@ -1,0 +1,156 @@
+# Chapter 5: Resampling Methods
+Solutions to Exercises  
+Targeting January 15, 2016  
+
+***
+## CONCEPTUAL
+***
+
+>EXERCISE 1:
+
+
+***
+
+>EXERCISE 2:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+__Part f)__
+
+
+__Part g)__
+
+
+__Part h)__
+
+
+***
+
+>EXERCISE 3:
+
+__Part a)__
+
+
+__Part b)__
+
+
+***
+
+>EXERCISE 4:
+
+
+***
+## APPLIED
+***
+
+>EXERCISE 5:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+***
+
+>EXERCISE 6:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+***
+
+>EXERCISE 7:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+***
+
+>EXERCISE 8:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+__Part f)__
+
+
+***
+
+>EXERCISE 9:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+__Part f)__
+
+
+__Part g)__
+
+
+__Part h)__
+

@@ -1,0 +1,664 @@
+---
+title: "Chapter 3: Linear Regression"
+author: "Solutions to Exercises"
+date: "January 7, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+***
+## CONCEPTUAL
+***
+
+>EXERCISE 1:
+
+`TV` and `radio` are related to `sales` but no evidence that `newspaper` is associated with `sales` in the presence of other predictors. 
+
+***
+
+>EXERCISE 2:
+
+KNN regression averages the closest observations to estimate prediction, KNN classifier assigns classification group based on majority of closest observations.
+
+***
+
+>EXERCISE 3:
+
+__Part a)__
+
+Resulting fit formula is:
+
+`Y = 50 + 20*GPA + 0.07*IQ + 35*Gender + 0.01*GPA:IQ - 10*GPA:Gender`
+
+Point iii is correct: For GPA above 35/10=3.5, males will earn more.
+
+__Part b)__
+
+Salary
+
+= 50 + 20x4.0 + 0.07x110 + 35x1 + 0.01x4.0x110 - 10x4.0x1
+
+= 137.1 thousand dollars
+
+__Part c)__
+
+FALSE: IQ scale is larger than other predictors (~100 versus 1-4 for GPA and 0-1 for gender) so even if all predictors have the same impact on salary, coefficients will be smaller for IQ predictors.
+
+***
+
+>EXERCISE 4:
+
+__Part a)__
+
+Having more predictors generally means better (lower) RSS on training data
+
+__Part b)__
+
+If the additional predictors lead to overfitting, the testing RSS could be worse (higher) for the cubic regression fit
+
+__Part c)__
+
+The cubic regression fit should produce a better RSS on the training set because it can adjust for the non-linearity
+
+__Part d)__
+
+Similar to training RSS, the cubic regression fit should produce a better RSS on the testing set because it can adjust for the non-linearity
+
+***
+
+>EXERCISE 5:
+
+$$ \hat{y}_{i} = x_{i} \times \frac{\sum_{i'=1}^{n}\left ( x_{i'} y_{i'} \right )}{\sum_{j=1}^{n} x_{j}^{2}} $$
+
+$$ \hat{y}_{i} = \sum_{i'=1}^{n} \frac{\left ( x_{i'} y_{i'} \right ) \times x_{i}}{\sum_{j=1}^{n} x_{j}^{2}} $$
+
+$$ \hat{y}_{i} = \sum_{i'=1}^{n} \left ( \frac{ x_{i} x_{i'} } { \sum_{j=1}^{n} x_{j}^{2} } \times y_{i'} \right ) $$
+
+$$ a_{i'} = \frac{ x_{i} x_{i'} } { \sum_{j=1}^{n} x_{j}^{2} } $$
+
+***
+
+>EXERCISE 6:
+
+Using equation (3.4) on page 62, when $x_{i}=\bar{x}$, then $\hat{\beta_{1}}=0$ and $\hat{\beta_{0}}=\bar{y}$ and the equation for $\hat{y_{i}}$ evaluates to equal $\bar{y}$
+
+***
+
+>EXERCISE 7:
+
+[*... will come back to this. maybe.*]
+
+__Given:__
+
+For $\bar{x}=\bar{y}=0$,
+
+$$ R^{2} = \frac{TSS - RSS}{TSS} = 1- \frac{RSS}{TSS} $$
+
+$$ TSS = \sum_{i=1}^{n} \left ( y_{i}-\bar{y}\right )^{2} = \sum_{i=1}^{n} y_{i}^{2} $$
+
+$$ RSS = \sum_{i=1}^{n} \left ( y_{i}-\hat{y_{i}}\right )^{2} = \sum_{i=1}^{n} \left ( y_{i}-\left ( \hat{\beta_{0}} + \hat{\beta_{1}}x_{i} \right )\right )^{2} = \sum_{i=1}^{n} \left ( y_{i}-\left ( \frac{\sum_{j=1}^{n} x_{j}y_{j} }{\sum_{k=1}^{n} x_{k}^{2}} \right ) x_{i} \right )^{2} $$
+
+$$ Cor \left( X, Y\right) = \frac{\sum_{i=1}^{n} x_{i} y_{i}}{\sqrt{\sum_{j=1}^{n}x_{j}^{2} \times \sum_{k=1}^{n}y_{k}^{2}} } $$
+
+__Prove:__
+
+$$ R^{2} = \left[ Cor \left( X, Y\right)\right]^{2} $$
+
+***
+## APPLIED
+***
+
+>EXERCISE 8:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Auto)
+fit.lm <- lm(mpg ~ horsepower, data=Auto)
+summary(fit.lm)
+
+# i. Yes, there is a relationship between predictor and response
+
+# ii. p-value is close to 0: relationship is strong
+
+# iii. Coefficient is negative: relationship is negative
+
+# iv. 
+new <- data.frame(horsepower = 98)
+predict(fit.lm, new)  # predicted mpg
+predict(fit.lm, new, interval = "confidence")  # conf interval
+predict(fit.lm, new, interval = "prediction")  # pred interval
+```
+
+__Part b)__
+
+```{r}
+plot(Auto$horsepower, Auto$mpg)
+abline(fit.lm, col="red")
+```
+
+__Part c)__
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit.lm)
+```
+
+* residuals vs fitted plot shows that the relationship is non-linear
+
+***
+
+>EXERCISE 9:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Auto)
+pairs(Auto)
+```
+
+__Part b)__
+
+```{r}
+cor(subset(Auto, select=-name))
+```
+
+__Part c)__
+
+```{r}
+fit.lm <- lm(mpg~.-name, data=Auto)
+summary(fit.lm)
+```
+
+* There is a relationship between predictors and response
+* `weight`, `year`, `origin` and `displacement` have statistically significant relationships
+* 0.75 coefficient for `year` suggests that later model year cars have better (higher) `mpg`
+
+__Part d)__
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit.lm)
+```
+
+* evidence of non-linearity
+* observation 14 has high leverage
+
+__Part e)__
+
+```{r}
+# try 3 interactions
+fit.lm0 <- lm(mpg~displacement+weight+year+origin, data=Auto)
+fit.lm1 <- lm(mpg~displacement+weight+year*origin, data=Auto)
+fit.lm2 <- lm(mpg~displacement+origin+year*weight, data=Auto)
+fit.lm3 <- lm(mpg~year+origin+displacement*weight, data=Auto)
+summary(fit.lm0)
+summary(fit.lm1)
+summary(fit.lm2)
+summary(fit.lm3)
+```
+
+All 3 interactions tested seem to have statistically significant effects.
+
+__Part f)__
+
+```{r}
+# try 3 predictor transformations
+fit.lm4 <- lm(mpg~poly(displacement,3)+weight+year+origin, data=Auto)
+fit.lm5 <- lm(mpg~displacement+I(log(weight))+year+origin, data=Auto)
+fit.lm6 <- lm(mpg~displacement+I(weight^2)+year+origin, data=Auto)
+summary(fit.lm4)
+summary(fit.lm5)
+summary(fit.lm6)
+```
+
+* `displacement`^2 has a larger effect than other `displacement` polynomials
+
+***
+
+>EXERCISE 10:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+data(Carseats)
+fit.lm <- lm(Sales ~ Price + Urban + US, data=Carseats)
+summary(fit.lm)
+```
+
+__Part b)__
+
+Sales: sales in thousands at each location
+Price: price charged for car seats at each location
+Urban: No/Yes by location
+US: No/Yes by location
+
+Coefficients for
+
+* Price (-0.054459): Sales drop by 54 for each dollar increase in Price - statistically significant
+* UrbanYes (-0.021916): Sales are 22 lower for Urban locations - not statistically significant
+* USYes (1.200573): Sales are 1,201 higher in the US locations - statistically significant
+
+__Part c)__
+
+Sales = 13.043 - 0.054 x Price - 0.022 x UrbanYes + 1.201 x USYes
+
+__Part d)__
+
+Can reject null hypothesis for Price and USYes (coefficients have low p-values)
+
+__Part e)__
+
+```{r}
+fit.lm1 <- lm(Sales ~ Price + US, data=Carseats)
+summary(fit.lm1)
+```
+
+__Part f)__
+
+* `fit.lm` (Price, Urban, US):
+    * RSE = 2.472
+    * R^2 = 0.2393
+* `fit.lm1` (Price, US):
+    * RSE = 2.469
+    * R^2 = 0.2393
+    
+`fit.lm1` has a slightly better (lower) RSE value and one less predictor variable.
+
+__Part g)__
+
+```{r}
+confint(fit.lm1)
+```
+
+__Part h)__
+
+```{r}
+par(mfrow=c(2,2))
+# residuals v fitted plot doesn't show strong outliers
+plot(fit.lm1)  
+par(mfrow=c(1,1))
+# studentized residuals within -3 to 3 range
+plot(predict(fit.lm1), rstudent(fit.lm1))
+# load car packages
+require(car)
+# no evidence of outliers
+qqPlot(fit.lm1, main="QQ Plot")  # studentized resid
+leveragePlots(fit.lm1)  # leverage plots
+plot(hatvalues(fit.lm1))
+# average obs leverage (p+1)/n = (2+1)/400 = 0.0075
+# data may have some leverage issues
+```
+
+***
+
+>EXERCISE 11:
+
+__Part a)__
+
+```{r}
+set.seed(1)
+x <- rnorm(100)
+y <- 2*x + rnorm(100)
+fit.lmY <- lm(y ~ x + 0)
+summary(fit.lmY)
+```
+
+Small std. error for coefficient relative to coefficient estimate. p-value is close to zero so statistically significant.
+
+__Part b)__
+
+```{r}
+fit.lmX <- lm(x ~ y + 0)
+summary(fit.lmX)
+```
+
+Same as Part a). Small std. error for coefficient relative to coefficient estimate. p-value is close to zero so statistically significant.
+
+__Part c)__
+
+$\hat {x} = \hat{\beta_{x}} \times y$ versus $\hat {y} = \hat{\beta_{y}} \times x$, the betas should be inverse of each other ($\hat{\beta_{x}}=\frac{1}{\hat{\beta_{y}}}$) but they are somewhat off
+
+__Part d)__
+
+[*... will come back to this. maybe.*]
+
+__Part e)__
+
+The two regression lines should be the same just with the axes switched, so it would make sense that the t-statistic is the same (both are 18.73).
+
+__Part f)__
+
+```{r}
+fit.lmY2 <- lm(y ~ x)
+fit.lmX2 <- lm(x ~ y)
+summary(fit.lmY2)
+summary(fit.lmX2)
+```
+
+t-statistics for both regressions are 18.56
+
+***
+
+>EXERCISE 12:
+
+__Part a)__
+
+When $x_{i}=y_{i}$, or more generally when the beta denominators are equal $\sum x_{i}^2=\sum y_{i}^2$
+
+__Part b)__
+
+```{r}
+# exercise 11 example works
+set.seed(1)
+x <- rnorm(100)
+y <- 2*x + rnorm(100)
+fit.lmY <- lm(y ~ x)
+fit.lmX <- lm(x ~ y)
+summary(fit.lmY)
+summary(fit.lmX)
+```
+
+1.99894 != 0.38942
+
+__Part c)__
+
+```{r}
+set.seed(1)
+x <- rnorm(100, mean=1000, sd=0.1)
+y <- rnorm(100, mean=1000, sd=0.1)
+fit.lmY <- lm(y ~ x)
+fit.lmX <- lm(x ~ y)
+summary(fit.lmY)
+summary(fit.lmX)
+```
+
+Both betas are 0.005
+
+***
+
+>EXERCISE 13:
+
+__Part a)__
+
+```{r}
+set.seed(1)
+x <- rnorm(100)  # mean=0, sd=1 is default
+```
+
+__Part b)__
+
+```{r}
+eps <- rnorm(100, sd=0.25^0.5)
+```
+
+__Part c)__
+
+```{r}
+y <- -1 + 0.5*x + eps  # eps=epsilon=e 
+length(y)
+```
+
+* length is 100
+* $\beta_{0}=-1$
+* $\beta_{1}=0.5$
+
+__Part d)__
+
+```{r}
+plot(x,y)
+```
+
+x and y seem to be positively correlated
+
+__Part e)__
+
+```{r}
+fit.lm <- lm(y ~ x)
+summary(fit.lm)
+```
+
+Estimated $\hat{\beta_{0}}=-1.019$ and $\hat{\beta_{1}}=0.499$, which are close to actual betas used to generate `y`
+
+__Part f)__
+
+```{r}
+plot(x,y)
+abline(-1, 0.5, col="blue")  # true regression
+abline(fit.lm, col="red")    # fitted regression
+legend(x = c(0,2.7),
+       y = c(-2.5,-2),
+       legend = c("population", "model fit"),
+       col = c("blue","red"), lwd=2 )
+```
+
+__Part g)__
+
+```{r}
+fit.lm1 <- lm(y~x+I(x^2))
+summary(fit.lm1)
+anova(fit.lm, fit.lm1)
+```
+
+No evidence of better fit based on high p-value of coefficient for X^2. Estimated coefficient for $\hat{\beta_{1}}$ is farther from true value. Anova test also suggests polynomial fit is not any better.
+
+__Part h)__
+
+```{r}
+eps2 <- rnorm(100, sd=0.1)  # prior sd was 0.5
+y2 <- -1 + 0.5*x + eps2
+fit.lm2 <- lm(y2 ~ x)
+summary(fit.lm2)
+plot(x, y2)
+abline(-1, 0.5, col="blue")   # true regression
+abline(fit.lm2, col="red")    # fitted regression
+legend(x = c(-2,-0.5),
+       y = c(-0.5,0),
+       legend = c("population", "model fit"),
+       col = c("blue","red"), lwd=2 )
+```
+
+Decreased variance along regression line. Fit for original y was already very good, so coef estimates are about the same for reduced epsilon. However, RSE and R^2 values are much improved.
+
+__Part i)__
+
+```{r}
+eps3 <- rnorm(100, sd=1)  # orig sd was 0.5
+y3 <- -1 + 0.5*x + eps3
+fit.lm3 <- lm(y3 ~ x)
+summary(fit.lm3)
+plot(x, y3)
+abline(-1, 0.5, col="blue")   # true regression
+abline(fit.lm3, col="red")    # fitted regression
+legend(x = c(0,2),
+       y = c(-4,-3),
+       legend = c("population", "model fit"),
+       col = c("blue","red"), lwd=2 )
+```
+
+Coefficient estimates are farther from true value (but not by too much). And, the RSE and R^2 values are worse.
+
+__Part j)__
+
+```{r}
+confint(fit.lm)
+confint(fit.lm2)
+confint(fit.lm3)
+```
+
+Confidence intervals are tighter for original populations with smaller variance
+
+***
+
+>EXERCISE 14:
+
+__Part a)__
+
+```{r}
+set.seed(1)
+x1 <- runif(100)
+x2 <- 0.5*x1 + rnorm(100)/10
+y <- 2 + 2*x1 + 0.3*x2 + rnorm(100)
+```
+
+Population regression is $y = \beta_{0} + \beta_{1} x_1 + \beta_{2} x_2 + \varepsilon$, where $\beta_{0}=2$, $\beta_{1}=2$ and $\beta_{2}=0.3$
+
+__Part b)__
+
+```{r}
+cor(x1,x2)
+plot(x1,x2)
+```
+
+__Part c)__
+
+```{r}
+fit.lm <- lm(y~x1+x2)
+summary(fit.lm)
+```
+
+Estimated beta coefficients are $\hat{\beta_{0}}=2.13$, $\hat{\beta_{1}}=1.44$ and $\hat{\beta_{2}}=1.01$. Coefficient for x1 is statistically significant but the coefficient for x2 is not given the presense of x1. These betas try to estimate the population betas: $\hat{\beta_{0}}$ is close (rounds to 2), $\hat{\beta_{1}}$ is 1.44 instead of 2 with a high standard error and $\hat{\beta_{2}}$ is farthest off.
+
+Reject $H_0 : \beta_1=0$; Cannot reject $H_0 : \beta_2=0$
+
+__Part d)__
+
+```{r}
+fit.lm1 <- lm(y~x1)
+summary(fit.lm1)
+```
+
+p-value is close to 0, can reject $H_0 : \beta_1=0$
+
+__Part e)__
+
+```{r}
+fit.lm2 <- lm(y~x2)
+summary(fit.lm2)
+```
+
+p-value is close to 0, can reject $H_0 : \beta_2=0$
+
+__Part f)__
+
+No. Without the presence of other predictors, both $\beta_1$ and $\beta_2$ are statistically significant. In the presence of other predictors, $\beta_2$ is no longer statistically significant.
+
+__Part g)__
+
+```{r}
+x1 <- c(x1, 0.1)
+x2 <- c(x2, 0.8)
+y <- c(y, 6)
+par(mfrow=c(2,2))
+# regression with both x1 and x2
+fit.lm <- lm(y~x1+x2)
+summary(fit.lm)
+plot(fit.lm)
+# regression with x1 only
+fit.lm1 <- lm(y~x2)
+summary(fit.lm1)
+plot(fit.lm1)
+# regression with x2 only
+fit.lm2 <- lm(y~x1)
+summary(fit.lm2)
+plot(fit.lm2)
+```
+
+New point is an outlier for x2 and has high leverage for both x1 and x2. 
+
+* X1 + X2: residuals vs. leverage plot shows obs 101 as standing out. we want to see the red line be close to the dotted black line but the new point causes major issues.
+* X1 only: new point has high leverage but doesn't cause issues because new point is not an outlier for x1 or y.
+* X2 only: new point has high leverage but doesn't cause major issues because it falls close to the regression line.
+
+```{r}
+plot(x1, y)
+plot(x2, y)
+```
+
+***
+
+>EXERCISE 15:
+
+__Part a)__
+
+```{r, warning=FALSE, message=FALSE}
+require(MASS)
+data(Boston)
+Boston$chas <- factor(Boston$chas, labels = c("N","Y"))
+names(Boston)[-1]  # all the potential predictors
+
+# extract p-value from model object
+lmp <- function (modelobject) {
+	if (class(modelobject) != "lm") 
+	  stop("Not an object of class 'lm' ")
+	f <- summary(modelobject)$fstatistic
+	p <- pf(f[1],f[2],f[3],lower.tail=F)
+	attributes(p) <- NULL
+	return(p)
+}
+
+results <- combn(names(Boston), 2, 
+                 function(x) { lmp(lm(Boston[, x])) }, 
+                 simplify = FALSE)
+vars <- combn(names(Boston), 2)
+names(results) <- paste(vars[1,],vars[2,],sep="~")
+results[1:13]  # p-values for response=crim
+```
+
+Only non-significant predictor is `chas`
+
+__Part b)__
+
+```{r}
+fit.lm <- lm(crim~., data=Boston)
+summary(fit.lm)
+```
+
+In the presence of other predictors, can reject null hypothesis for the following:
+
+* `zn` 
+* `nox`
+* `dis`
+* `rad`
+* `black`
+* `lstat`
+* `medv`
+
+__Part c)__
+
+Fewer predictors have statistically significant impact when given the presence of other predictors. 
+
+```{r warning=FALSE, message=FALSE}
+results <- combn(names(Boston), 2, 
+                 function(x) { coefficients(lm(Boston[, x])) }, 
+                 simplify = FALSE)
+(coef.uni <- unlist(results)[seq(2,26,2)])
+(coef.multi <- coefficients(fit.lm)[-1])
+plot(coef.uni, coef.multi)
+```
+
+Beta coefficient estimates are way off for `nox` 
+
+__Part d)__
+
+```{r, warning=FALSE, message=FALSE}
+# skip chas because it's a factor variable
+summary(lm(crim~poly(zn,3), data=Boston))      # 1,2
+summary(lm(crim~poly(indus,3), data=Boston))   # 1,2,3
+summary(lm(crim~poly(nox,3), data=Boston))     # 1,2,3
+summary(lm(crim~poly(rm,3), data=Boston))      # 1,2
+summary(lm(crim~poly(age,3), data=Boston))     # 1,2,3
+summary(lm(crim~poly(dis,3), data=Boston))     # 1,2,3
+summary(lm(crim~poly(rad,3), data=Boston))     # 1,2
+summary(lm(crim~poly(tax,3), data=Boston))     # 1,2
+summary(lm(crim~poly(ptratio,3), data=Boston)) # 1,2,3
+summary(lm(crim~poly(black,3), data=Boston))   # 1
+summary(lm(crim~poly(lstat,3), data=Boston))   # 1,2
+summary(lm(crim~poly(medv,3), data=Boston))    # 1,2,3
+```
+
+Yes, there is evidence of non-linear association for many of the predictors.
