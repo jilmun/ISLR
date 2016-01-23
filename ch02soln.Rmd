@@ -4,12 +4,14 @@ author: "Solutions to Exercises"
 date: "November 19, 2015"
 output: 
   html_document: 
-    keep_md: yes
+    keep_md: no
 ---
 
 ***
 ## CONCEPTUAL
 ***
+
+<a id="ex01"></a>
 
 >EXERCISE 1:
 
@@ -30,6 +32,8 @@ __Part d)__
 flexible learning method would perform __worse__ because it would be more likely to overfit
 
 ***
+
+<a id="ex02"></a>
 
 >EXERCISE 2:
 
@@ -66,6 +70,8 @@ __Part c)__
 
 ***
 
+<a id="ex03"></a>
+
 >EXERCISE 3:
 
 __Part a)__
@@ -94,6 +100,8 @@ __Part b)__
 * `train error` will always decrease with more model flexibility because an overfit model will produce lower MSE on the training data
 
 ***
+
+<a id="ex04"></a>
 
 >EXERCISE 4:
 
@@ -130,6 +138,8 @@ __Part c)__
 
 ***
 
+<a id="ex05"></a>
+
 >EXERCISE 5:
 
 Advantages of a very flexible model include better fit to data and fewer prior assumptions. Disadvantages are hard to interpret and prone to overfitting. 
@@ -138,6 +148,8 @@ A more flexible approach might be preferred is the underlying data is very compl
 
 ***
 
+<a id="ex06"></a>
+
 >EXERCISE 6:
 
 For parametric methods, we make an assumption about the shape of the underlying data, select a model form, and fit the data to our selected form. The advantage here is that we can incorporate any prior/expert knowledge and don't tend to have too many parameters that need to be fit. To the extent that our prior/expert assumptions are wrong, then that would be a disadvantage.
@@ -145,6 +157,8 @@ For parametric methods, we make an assumption about the shape of the underlying 
 Non-parametric methods don't make explicit assumptions on the shape of the data. This can have the advantage of not needing to make an assumption on the form of the function and can more accurately fit a wider range of shapes for the underlying data. The key disadvantage is that they need a large number of observations to fit an accurate estimate.
 
 ***
+
+<a id="ex07"></a>
 
 >EXERCISE 7:
 
@@ -184,6 +198,8 @@ best value of K should be smaller to be able to capture more of the non-linear d
 ***
 ## APPLIED
 ***
+
+<a id="ex08"></a>
 
 >EXERCISE 8:
 
@@ -230,6 +246,8 @@ hist(College$Outstate, main="Outstate")
 ```
 
 ***
+
+<a id="ex09"></a>
 
 >EXERCISE 9:
 
@@ -289,6 +307,8 @@ __Part f)__
 yes, the plots show that there are relationships between `mpg` and other variables in the data set
 
 ***
+
+<a id="ex10"></a>
 
 >EXERCISE 10:
 

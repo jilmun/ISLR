@@ -4,12 +4,14 @@ author: "Solutions to Exercises"
 date: "January 12, 2016"
 output: 
   html_document: 
-    keep_md: yes
+    keep_md: no
 ---
 
 ***
 ## CONCEPTUAL
 ***
+
+<a id="ex01"></a>
 
 >EXERCISE 1:
 
@@ -25,6 +27,8 @@ Equation (4.2) becomes
 
 ***
 
+<a id="ex02"></a>
+
 >EXERCISE 2:
 
 Equation (4.12): $p_k(x) = \frac {\pi_k \frac {1} {\sqrt{2 \pi} \sigma} \exp(- \frac {1} {2 \sigma^2} (x - \mu_k)^2) } {\sum { \pi_l \frac {1} {\sqrt{2 \pi} \sigma} \exp(- \frac {1} {2 \sigma^2} (x - \mu_l)^2) }}$
@@ -38,6 +42,8 @@ Substitute $C = \frac { \frac {1} {\sqrt{2 \pi} \sigma} \exp(- \frac {1} {2 \sig
   __Step 3:__ Simplify and rearrange $log(p_k(x)) =  (\frac {2x \mu_k} {2 \sigma^2} -\frac {\mu_k^2} {2 \sigma^2}) + log(\pi_k) + log(C)$
 
 ***
+
+<a id="ex03"></a>
 
 >EXERCISE 3:
 
@@ -54,6 +60,8 @@ The constant term that does not vary by $k$ becomes $C' = \frac { \frac {1} {\sq
 There's the $x^2$.
 
 ***
+
+<a id="ex04"></a>
 
 >EXERCISE 4:
 
@@ -83,6 +91,8 @@ This is saying that when the number of features is high (i.e. p=100), to use on 
 
 ***
 
+<a id="ex05"></a>
+
 >EXERCISE 5:
 
 __Part a)__
@@ -102,6 +112,8 @@ __Part d)__
 FALSE: We might achieve a better error rate on the training set but not on the test set because if the true decision boundary is linear then the QDA is not flexible in any predictive way.
 
 ***
+
+<a id="ex06"></a>
 
 >EXERCISE 6:
 
@@ -129,6 +141,8 @@ Student needs to study for 50 hours.
 
 ***
 
+<a id="ex07"></a>
+
 >EXERCISE 7:
 
 For constant variance, $p_k(x) = \frac {\pi_k \frac {1} {\sqrt{2 \pi} \sigma} \exp(- \frac {1} {2 \sigma^2} (x - \mu_k)^2) } {\sum { \pi_l \frac {1} {\sqrt{2 \pi} \sigma} \exp(- \frac {1} {2 \sigma^2} (x - \mu_l)^2) }}$
@@ -143,11 +157,15 @@ Probability is 75.2%
 
 ***
 
+<a id="ex08"></a>
+
 >EXERCISE 8:
 
 There's not enough information to say which method is better. With such a high error rate for the logistic regression, it's possible that the true decision boundary is not linear, so KNN=1 might have a better fit. On the other hand, KNN=1 has a high propensity to overfit. With KNN=1 having an average error of 18%, it's possible that the training error is close to 0% and the test error is more than 30%. If we are selecting the model with only error rate data, then we want to know which model has the lower __test__ error rate.
 
 ***
+
+<a id="ex09"></a>
 
 >EXERCISE 9:
 
@@ -176,6 +194,8 @@ Odds of defaulting is 0.19
 ***
 ## APPLIED
 ***
+
+<a id="ex10"></a>
 
 >EXERCISE 10:
 
@@ -289,6 +309,8 @@ mean(fit.lda.pred == test$Direction)  # Accuracy=0.644
 
 ***
 
+<a id="ex11"></a>
+
 >EXERCISE 11:
 
 __Part a)__
@@ -377,6 +399,8 @@ KNN performs best around k=30 and k=100
 
 ***
 
+<a id="ex12"></a>
+
 >EXERCISE 12:
 
 __Part a)__
@@ -433,6 +457,8 @@ PlotPower(1:10,3)
 ```
 
 ***
+
+<a id="ex13"></a>
 
 >EXERCISE 13:
 

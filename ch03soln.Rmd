@@ -4,12 +4,14 @@ author: "Solutions to Exercises"
 date: "January 7, 2016"
 output: 
   html_document: 
-    keep_md: yes
+    keep_md: no
 ---
 
 ***
 ## CONCEPTUAL
 ***
+
+<a id="ex01"></a>
 
 >EXERCISE 1:
 
@@ -17,11 +19,15 @@ output:
 
 ***
 
+<a id="ex02"></a>
+
 >EXERCISE 2:
 
 KNN regression averages the closest observations to estimate prediction, KNN classifier assigns classification group based on majority of closest observations.
 
 ***
+
+<a id="ex03"></a>
 
 >EXERCISE 3:
 
@@ -47,6 +53,8 @@ FALSE: IQ scale is larger than other predictors (~100 versus 1-4 for GPA and 0-1
 
 ***
 
+<a id="ex04"></a>
+
 >EXERCISE 4:
 
 __Part a)__
@@ -67,6 +75,8 @@ Similar to training RSS, the cubic regression fit should produce a better RSS on
 
 ***
 
+<a id="ex05"></a>
+
 >EXERCISE 5:
 
 $$ \hat{y}_{i} = x_{i} \times \frac{\sum_{i'=1}^{n}\left ( x_{i'} y_{i'} \right )}{\sum_{j=1}^{n} x_{j}^{2}} $$
@@ -79,11 +89,15 @@ $$ a_{i'} = \frac{ x_{i} x_{i'} } { \sum_{j=1}^{n} x_{j}^{2} } $$
 
 ***
 
+<a id="ex06"></a>
+
 >EXERCISE 6:
 
 Using equation (3.4) on page 62, when $x_{i}=\bar{x}$, then $\hat{\beta_{1}}=0$ and $\hat{\beta_{0}}=\bar{y}$ and the equation for $\hat{y_{i}}$ evaluates to equal $\bar{y}$
 
 ***
+
+<a id="ex07"></a>
 
 >EXERCISE 7:
 
@@ -108,6 +122,8 @@ $$ R^{2} = \left[ Cor \left( X, Y\right)\right]^{2} $$
 ***
 ## APPLIED
 ***
+
+<a id="ex08"></a>
 
 >EXERCISE 8:
 
@@ -149,6 +165,8 @@ plot(fit.lm)
 * residuals vs fitted plot shows that the relationship is non-linear
 
 ***
+
+<a id="ex09"></a>
 
 >EXERCISE 9:
 
@@ -218,6 +236,8 @@ summary(fit.lm6)
 * `displacement`^2 has a larger effect than other `displacement` polynomials
 
 ***
+
+<a id="ex10"></a>
 
 >EXERCISE 10:
 
@@ -296,6 +316,8 @@ plot(hatvalues(fit.lm1))
 
 ***
 
+<a id="ex11"></a>
+
 >EXERCISE 11:
 
 __Part a)__
@@ -344,6 +366,8 @@ t-statistics for both regressions are 18.56
 
 ***
 
+<a id="ex12"></a>
+
 >EXERCISE 12:
 
 __Part a)__
@@ -380,6 +404,8 @@ summary(fit.lmX)
 Both betas are 0.005
 
 ***
+
+<a id="ex13"></a>
 
 >EXERCISE 13:
 
@@ -494,6 +520,8 @@ Confidence intervals are tighter for original populations with smaller variance
 
 ***
 
+<a id="ex14"></a>
+
 >EXERCISE 14:
 
 __Part a)__
@@ -580,6 +608,8 @@ plot(x2, y)
 ```
 
 ***
+
+<a id="ex15"></a>
 
 >EXERCISE 15:
 

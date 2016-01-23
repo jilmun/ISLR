@@ -4,12 +4,14 @@ author: "Solutions to Exercises"
 date: "January 18, 2016"
 output: 
   html_document: 
-    keep_md: yes
+    keep_md: no
 ---
 
 ***
 ## CONCEPTUAL
 ***
+
+<a id="ex01"></a>
 
 >EXERCISE 1:
 
@@ -26,6 +28,8 @@ $$ (2\sigma_X^2 + 2\sigma_Y^2 - 4\sigma_{XY}) \alpha = 2\sigma_Y^2 - 2\sigma_{XY
 $$ \alpha = \frac{\sigma_Y^2 - \sigma_{XY}}{\sigma_X^2 + \sigma_Y^2 - 2\sigma_{XY}} $$
 
 ***
+
+<a id="ex02"></a>
 
 >EXERCISE 2:
 
@@ -80,6 +84,8 @@ The resulting fraction of 10,000 bootstrap samples that have the 4th observation
 
 ***
 
+<a id="ex03"></a>
+
 >EXERCISE 3:
 
 __Part a)__
@@ -93,6 +99,8 @@ __Part b)__
 
 ***
 
+<a id="ex04"></a>
+
 >EXERCISE 4:
 
 We can use the bootstrap method to sample with replacement from our dataset and estimate Y's from each sample. With the results of different predicted Y values, we can then estimate the standard deviation of our prediction. 
@@ -100,6 +108,8 @@ We can use the bootstrap method to sample with replacement from our dataset and 
 ***
 ## APPLIED
 ***
+
+<a id="ex05"></a>
 
 >EXERCISE 5:
 
@@ -165,6 +175,8 @@ Test error with the `student` feature included is similar to without including `
 
 ***
 
+<a id="ex06"></a>
+
 >EXERCISE 6:
 
 __Part a)__
@@ -204,6 +216,8 @@ Standard error estimates are pretty close using glm summary function versus boot
 * `balance`: 2.274e-04 with glm summary, 2.106e-04 using bootstrap
 
 ***
+
+<a id="ex07"></a>
 
 >EXERCISE 7:
 
@@ -256,6 +270,8 @@ mean(loocv.err)
 Estimated test error with LOOCV is 44.4%
 
 ***
+
+<a id="ex08"></a>
 
 >EXERCISE 8:
 
@@ -336,6 +352,8 @@ summary(fit0)
 Summary shows that only $X$ and $X^2$ are statistically significant predictors. This agrees with the LOOCV results that indicate using only $X$ and $X^2$ produces the best model.
 
 ***
+
+<a id="ex09"></a>
 
 >EXERCISE 9:
 
