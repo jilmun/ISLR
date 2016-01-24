@@ -1,0 +1,192 @@
+---
+title: "Chapter 10: Unsupervised Learning"
+author: "Solutions to Exercises"
+date: "January 30, 2016"
+output: 
+  html_document: 
+    keep_md: no
+---
+
+***
+## CONCEPTUAL
+***
+
+<a id="ex01"></a>
+
+>EXERCISE 1:
+
+__Part a)__
+
+
+__Part b)__
+
+
+
+***
+
+<a id="ex02"></a>
+
+>EXERCISE 2:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+
+***
+
+<a id="ex03"></a>
+
+>EXERCISE 3:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+__Part f)__
+
+
+
+***
+
+<a id="ex04"></a>
+
+>EXERCISE 4:
+
+__Part a)__
+
+
+__Part b)__
+
+
+
+***
+
+<a id="ex05"></a>
+
+>EXERCISE 5:
+
+
+
+***
+
+<a id="ex06"></a>
+
+>EXERCISE 6:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+
+***
+## APPLIED
+***
+
+<a id="ex07"></a>
+
+>EXERCISE 7:
+
+
+
+***
+
+<a id="ex08"></a>
+
+>EXERCISE 8:
+
+__Part a)__
+
+
+__Part b)__
+
+
+
+***
+
+<a id="ex09"></a>
+
+>EXERCISE 9:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+
+***
+
+<a id="ex10"></a>
+
+>EXERCISE 10:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
+
+__Part d)__
+
+
+__Part e)__
+
+
+__Part f)__
+
+
+__Part g)__
+
+
+
+***
+
+<a id="ex11"></a>
+
+>EXERCISE 11:
+
+__Part a)__
+
+
+__Part b)__
+
+
+__Part c)__
+
