@@ -1,7 +1,7 @@
 ---
 title: "Chapter 7: Moving Beyond Linearity"
 author: "Solutions to Exercises"
-date: "January 30, 2016"
+date: "February 4, 2016"
 output: 
   html_document: 
     keep_md: no
@@ -17,19 +17,23 @@ output:
 
 __Part a)__
 
+[*... will come back to this. maybe.*]
 
 __Part b)__
 
+[*... will come back to this. maybe.*]
 
 __Part c)__
 
+[*... will come back to this. maybe.*]
 
 __Part d)__
 
+[*... will come back to this. maybe.*]
 
 __Part e)__
 
-
+[*... will come back to this. maybe.*]
 
 ***
 
@@ -39,19 +43,23 @@ __Part e)__
 
 __Part a)__
 
+When $\lambda=\infty$, first term does not matter. $g^{(0)}=g=0$ means $\hat g$ must be 0 
 
 __Part b)__
 
+When $\lambda=\infty$, first term does not matter. $g^{(1)}=g'=0$ means $\hat g$ must be constant (horizontal line). 
 
 __Part c)__
 
+When $\lambda=\infty$, first term does not matter. $g^{(2)}=g''=0$ means $\hat g$ must be a straight line like $3x+2$. 
 
 __Part d)__
 
+When $\lambda=\infty$, first term does not matter. $g^{(3)}=g'''=0$ means $\hat g$ must be a smooth quadratic curve like $x^2$. 
 
 __Part e)__
 
-
+When $\lambda=\infty$, second term does not matter and $\hat g$ becomes a linear regression least squares fit. $\hat g$ can make many forms (e.g. $3x+5$).
 
 ***
 
@@ -59,7 +67,16 @@ __Part e)__
 
 >EXERCISE 3:
 
+* $X < 1: Y=1+X$ 
+* $X \geq 1: Y=1+X-2(X-1)^2$
 
+```{r}
+x.1 <- seq(-2,1,0.1)  # X<1
+x.2 <- seq(1,2,0.1)   # X>=1
+y.1 <- 1 + x.1
+y.2 <- 1 + x.2 - 2*(x.2-1)^2
+plot(c(x.1,x.2),c(y.1,y.2))
+```
 
 ***
 
@@ -67,7 +84,41 @@ __Part e)__
 
 >EXERCISE 4:
 
+Plugging in the coefficients, $\hat Y = 1 + b_1(X) + 3b_2(X)$
 
+* $X < 0: Y = 1 + (0) + 3(0) = 1$ 
+* $0\leq X< 1: 1 + (1) + 3(0) = 2$
+* $1\leq X\leq 2: 1 + (1-(X-1)) + 3(0) = 3-X$
+* $2< X< 3: 1 + (0) + 3(0) = 1$
+* $3\leq X\leq 4: 1 + (0) + 3(X-3) = 3X-8$
+* $4< X\leq 5: 1 + (0) + 3(1) = 4$
+* $X > 5: 1 + (0) + 3(0) = 1$
+
+```{r}
+require(ggplot2)
+x.1 <- seq(-6, 0, 0.1)  # [-6,0)
+x.2 <- seq(0, 1, 0.1)   # [0,1)
+x.3 <- seq(1, 2, 0.1)   # [1,2]
+x.4 <- seq(2, 3, 0.1)   # (2,3)
+x.5 <- seq(3, 4, 0.1)   # [3,4]
+x.6 <- seq(4, 5, 0.1)   # (4,5]
+x.7 <- seq(5, 6, 0.1)   # (5,6)
+y.1 <- rep(1, length(x.1)) 
+y.2 <- rep(2, length(x.2))
+y.3 <- 3 - x.3
+y.4 <- rep(1, length(x.4))
+y.5 <- 3*x.5 - 8
+y.6 <- rep(4, length(x.6))
+y.7 <- rep(1, length(x.7))
+df <- data.frame(X = c(x.1,x.2,x.3,x.4,x.5,x.6,x.7),
+                 Y = c(y.1,y.2,y.3,y.4,y.5,y.6,y.7))
+p <- ggplot(df, aes(x=X,y=Y)) + geom_line(size=1.5)
+rect <- data.frame(xmin=-2, xmax=2, ymin=-Inf, ymax=Inf)
+p + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax),
+              fill="grey20",
+              alpha=0.4,
+              inherit.aes = FALSE)
+```
 
 ***
 
@@ -77,13 +128,15 @@ __Part e)__
 
 __Part a)__
 
+Because $g^{(3)}$ is more stringent on its smoothness requirements then $g^{(4)}$, we'd expect $\hat g_2$ to be more flexible and be able to have a better fit to the training data and thus a smaller training RSS.
 
 __Part b)__
 
+Hard to say. Depends on true form of $y$. If $\hat g_2$ overfits the data because of its increased flexibility, then $\hat g_1$ will likely have a better test RSS.
 
 __Part c)__
 
-
+When $\lambda=0$, only the first term matters, which is the same for both $\hat g_1$ and $\hat g_2$. The two equations become the same and they would have the same training and test RSS.
 
 ***
 ## APPLIED
@@ -95,10 +148,69 @@ __Part c)__
 
 __Part a)__
 
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+require(boot)
+data(Wage)
+set.seed(1)
+
+# cross-validation
+cv.error <- rep(0,10)
+for (i in 1:10) {
+  glm.fit <- glm(wage~poly(age,i), data=Wage)
+  cv.error[i] <- cv.glm(Wage, glm.fit, K=10)$delta[1]  # [1]:std, [2]:bias-corrected
+}
+cv.error
+plot(cv.error, type="b")  # 4th degree looks good!
+
+# ANOVA
+fit.01 <- lm(wage~age, data=Wage)
+fit.02 <- lm(wage~poly(age,2), data=Wage)
+fit.03 <- lm(wage~poly(age,3), data=Wage)
+fit.04 <- lm(wage~poly(age,4), data=Wage)
+fit.05 <- lm(wage~poly(age,5), data=Wage)
+fit.06 <- lm(wage~poly(age,6), data=Wage)
+fit.07 <- lm(wage~poly(age,7), data=Wage)
+fit.08 <- lm(wage~poly(age,8), data=Wage)
+fit.09 <- lm(wage~poly(age,9), data=Wage)
+fit.10 <- lm(wage~poly(age,10), data=Wage)
+anova(fit.01,fit.02,fit.03,fit.04,fit.05,fit.06,fit.07,fit.08,fit.09,fit.10)
+# 3rd or 4th degrees look best based on ANOVA test
+# let's go with 4th degree fit
+agelims <- range(Wage$age)
+age.grid <- seq(agelims[1], agelims[2])
+preds <- predict(fit.04, newdata=list(age=age.grid), se=TRUE)
+se.bands <- preds$fit + cbind(2*preds$se.fit, -2*preds$se.fit)
+par(mfrow=c(1,1), mar=c(4.5,4.5,1,1), oma=c(0,0,4,0))
+plot(Wage$age, Wage$wage, xlim=agelims, cex=0.5, col="darkgrey")
+title("Degree 4 Polynomial Fit", outer=TRUE)
+lines(age.grid, preds$fit, lwd=2, col="blue")
+matlines(age.grid, se.bands, lwd=1, col="blue", lty=3)
+```
 
 __Part b)__
 
+```{r, warning=FALSE, message=FALSE}
+set.seed(1)
 
+# cross-validation
+cv.error <- rep(0,9)
+for (i in 2:10) {
+  Wage$age.cut <- cut(Wage$age,i)
+  glm.fit <- glm(wage~age.cut, data=Wage)
+  cv.error[i-1] <- cv.glm(Wage, glm.fit, K=10)$delta[1]  # [1]:std, [2]:bias-corrected
+}
+cv.error
+plot(2:10, cv.error, type="b")  # 7 or 8 cuts look optimal
+# going with 8 cuts
+cut.fit <- glm(wage~cut(age,8), data=Wage)
+preds <- predict(cut.fit, newdata=list(age=age.grid), se=TRUE)
+se.bands <- preds$fit + cbind(2*preds$se.fit, -2*preds$se.fit)
+plot(Wage$age, Wage$wage, xlim=agelims, cex=0.5, col="darkgrey")
+title("Fit with 8 Age Bands")
+lines(age.grid, preds$fit, lwd=2, col="blue")
+matlines(age.grid, se.bands, lwd=1, col="blue", lty=3)
+```
 
 ***
 
@@ -106,7 +218,25 @@ __Part b)__
 
 >EXERCISE 7:
 
+```{r, warning=FALSE, message=FALSE}
+plot(Wage$maritl, Wage$wage)
+plot(Wage$jobclass, Wage$wage)
+```
 
+Both marital status and job class are categorical variables. It seems that on a univariate basis, wages for `jobclass`=`Information` are higher than `jobclass`=`Industrial`. For marital status, married seems to have the highest wages, though this is probably confounded by age.
+
+```{r, warning=FALSE, message=FALSE}
+require(gam)
+gam.fit1 <- gam(wage~ns(age,5), data=Wage)
+gam.fit2.1 <- gam(wage~ns(age,5)+maritl, data=Wage)
+gam.fit2.2 <- gam(wage~ns(age,5)+jobclass, data=Wage)
+gam.fit3 <- gam(wage~ns(age,5)+maritl+jobclass, data=Wage)
+anova(gam.fit1, gam.fit2.1, gam.fit3)
+anova(gam.fit1, gam.fit2.2, gam.fit3)
+# both marital status and job class are significant even with age included
+par(mfrow=c(1,3))
+plot(gam.fit3, se=TRUE, col="blue")
+```
 
 ***
 
@@ -114,7 +244,41 @@ __Part b)__
 
 >EXERCISE 8:
 
+Assume we are interested in predicting `mpg`.
 
+```{r, warning=FALSE, message=FALSE}
+require(ISLR)
+require(boot)
+require(gam)
+data(Auto)
+set.seed(1)
+
+# a few quick plots to look at data
+pairs(Auto)
+
+# `displacement`, `horsepower`, `weight`, `acceleration` may have nonlinear relationships
+
+# polynomial fit with cross-validation on `horsepower`
+cv.error <- rep(0,10)
+for (i in 1:10) {
+  glm.fit <- glm(mpg~poly(horsepower,i), data=Auto)
+  cv.error[i] <- cv.glm(Auto, glm.fit, K=10)$delta[1]  # [1]:std, [2]:bias-corrected
+}
+cv.error
+plot(cv.error, type="b")  # 1st degree definitely not enough, 2nd looks good
+
+# gam fit with `horsepower`, `weight` and `cylinders`
+Auto$cylinders <- factor(Auto$cylinders)  # turn into factor variable
+gam.fit1 <- gam(mpg~poly(horsepower,2), data=Auto)
+gam.fit2.1 <- gam(mpg~poly(horsepower,2)+weight, data=Auto)
+gam.fit2.2 <- gam(mpg~poly(horsepower,2)+cylinders, data=Auto)
+gam.fit3 <- gam(mpg~poly(horsepower,2)+weight+cylinders, data=Auto)
+anova(gam.fit1, gam.fit2.1, gam.fit3)
+anova(gam.fit1, gam.fit2.2, gam.fit3)
+# both `weight` and `cylinders` are significant even with `horsepower` included
+par(mfrow=c(1,3))
+plot(gam.fit3, se=TRUE, col="blue")
+```
 
 ***
 
@@ -124,22 +288,93 @@ __Part b)__
 
 __Part a)__
 
+```{r, warning=FALSE, message=FALSE}
+require(MASS)
+data(Boston)
+set.seed(1)
+fit.03 <- lm(nox~poly(dis,3), data=Boston)
+dislims <- range(Boston$dis)
+dis.grid <- seq(dislims[1], dislims[2], 0.1)
+preds <- predict(fit.03, newdata=list(dis=dis.grid), se=TRUE)
+se.bands <- preds$fit + cbind(2*preds$se.fit, -2*preds$se.fit)
+par(mfrow=c(1,1), mar=c(4.5,4.5,1,1), oma=c(0,0,4,0))
+plot(Boston$dis, Boston$nox, xlim=dislims, cex=0.5, col="darkgrey")
+title("Degree 3 Polynomial Fit")
+lines(dis.grid, preds$fit, lwd=2, col="blue")
+matlines(dis.grid, se.bands, lwd=1, col="blue", lty=3)
+summary(fit.03)
+```
 
 __Part b)__
 
+```{r, warning=FALSE, message=FALSE}
+rss.error <- rep(0,10)
+for (i in 1:10) {
+  lm.fit <- lm(nox~poly(dis,i), data=Boston)
+  rss.error[i] <- sum(lm.fit$residuals^2)
+}
+rss.error
+plot(rss.error, type="b")  
+```
 
 __Part c)__
 
+```{r}
+require(boot)
+set.seed(1)
+cv.error <- rep(0,10)
+for (i in 1:10) {
+  glm.fit <- glm(nox~poly(dis,i), data=Boston)
+  cv.error[i] <- cv.glm(Boston, glm.fit, K=10)$delta[1]  # [1]:std, [2]:bias-corrected
+}
+cv.error
+plot(cv.error, type="b")  # woah!
+```
+
+The optimal fit seems to be with a 4th degree polynomial, though the 2nd degree fit is not much worse. Crazy things happen with 7th and 9th degree fits.
 
 __Part d)__
 
+```{r}
+require(splines)
+fit.sp <- lm(nox~bs(dis, df=4), data=Boston)
+pred <- predict(fit.sp, newdata=list(dis=dis.grid), se=T)
+plot(Boston$dis, Boston$nox, col="gray")
+lines(dis.grid, pred$fit, lwd=2)
+lines(dis.grid, pred$fit+2*pred$se, lty="dashed")
+lines(dis.grid, pred$fit-2*pred$se, lty="dashed")
+# set df to select knots at uniform quantiles of `dis`
+attr(bs(Boston$dis,df=4),"knots")  # only 1 knot at 50th percentile
+```
 
 __Part e)__
 
+```{r}
+require(splines)
+set.seed(1)
+rss.error <- rep(0,7)
+for (i in 4:10) {
+  fit.sp <- lm(nox~bs(dis, df=i), data=Boston)
+  rss.error[i-3] <- sum(fit.sp$residuals^2)
+}
+rss.error
+plot(4:10, rss.error, type="b")  # RSS decreases on train set w more flexible fit
+```
 
 __Part f)__
 
-
+```{r, message=FALSE, warning=FALSE}
+require(splines)
+require(boot)
+set.seed(1)
+cv.error <- rep(0,7)
+for (i in 4:10) {
+  glm.fit <- glm(nox~bs(dis, df=i), data=Boston)
+  cv.error[i-3] <- cv.glm(Boston, glm.fit, K=10)$delta[1]
+}
+cv.error
+plot(4:10, cv.error, type="b")  # should use at least df=5
+```
 
 ***
 
@@ -149,16 +384,83 @@ __Part f)__
 
 __Part a)__
 
+```{r, message=FALSE, warning=FALSE}
+require(ISLR)
+require(leaps)
+data(College)
+set.seed(1)
+
+# split data into train and test sets
+trainid <- sample(1:nrow(College), nrow(College)/2)
+train <- College[trainid,]
+test <- College[-trainid,]
+
+# predict function from chapter 6 labs
+predict.regsubsets <- function(object, newdata, id, ...){
+  form <- as.formula(object$call[[2]])
+  mat <- model.matrix(form, newdata)
+  coefi <- coef(object, id=id)
+  xvars <- names(coefi)
+  mat[,xvars]%*%coefi
+}
+
+# forward selection
+fit.fwd <- regsubsets(Outstate~., data=train, nvmax=ncol(College)-1)
+(fwd.summary <- summary(fit.fwd))
+
+err.fwd <- rep(NA, ncol(College)-1)
+for(i in 1:(ncol(College)-1)) {
+  pred.fwd <- predict(fit.fwd, test, id=i)
+  err.fwd[i] <- mean((test$Outstate - pred.fwd)^2)
+}
+par(mfrow=c(2,2))
+plot(err.fwd, type="b", main="Test MSE", xlab="Number of Predictors")
+min.mse <- which.min(err.fwd)  
+points(min.mse, err.fwd[min.mse], col="red", pch=4, lwd=5)
+plot(fwd.summary$adjr2, type="b", main="Adjusted R^2", xlab="Number of Predictors")
+max.adjr2 <- which.max(fwd.summary$adjr2)  
+points(max.adjr2, fwd.summary$adjr2[max.adjr2], col="red", pch=4, lwd=5)
+plot(fwd.summary$cp, type="b", main="cp", xlab="Number of Predictors")
+min.cp <- which.min(fwd.summary$cp)  
+points(min.cp, fwd.summary$cp[min.cp], col="red", pch=4, lwd=5)
+plot(fwd.summary$bic, type="b", main="bic", xlab="Number of Predictors")
+min.bic <- which.min(fwd.summary$bic)  
+points(min.bic, fwd.summary$bic[min.bic], col="red", pch=4, lwd=5)
+# model metrics do not improve much after 6 predictors
+coef(fit.fwd, 6)
+```
 
 __Part b)__
 
+```{r, message=FALSE, warning=FALSE}
+require(gam)
+gam.fit <- gam(Outstate ~ 
+                 Private +   # categorical variable
+                 s(Room.Board,3) + 
+                 s(Terminal,3) + 
+                 s(perc.alumni,3) + 
+                 s(Expend,3) + 
+                 s(Grad.Rate,3), 
+               data=College)
+par(mfrow=c(2,3))
+plot(gam.fit, se=TRUE, col="blue")
+```
 
 __Part c)__
 
+```{r}
+pred <- predict(gam.fit, test)
+(mse.error <- mean((test$Outstate - pred)^2))
+err.fwd[6]  # significantly better than linear fit
+```
 
 __Part d)__
 
+```{r}
+summary(gam.fit)
+```
 
+Strong evidence of non-linear effects for `Expend`, some evidence for `Room.Board`, `Terminal` and `Grad.Rate`, and no evidence for `perc.alumni`.
 
 ***
 
@@ -168,25 +470,86 @@ __Part d)__
 
 __Part a)__
 
+```{r}
+set.seed(1)
+X1 <- rnorm(100)
+X2 <- rnorm(100)
+beta_0 <- -3.8
+beta_1 <- 0.3
+beta_2 <- 4.1
+eps <- rnorm(100, sd = 1)
+Y <- beta_0 + beta_1*X1 + beta_2*X2 + eps
+par(mfrow=c(1,1))
+plot(Y)
+```
 
 __Part b)__
 
+```{r}
+# initialize beta hat 1
+bhat_1 <- 1
+```
 
 __Part c)__
 
+```{r}
+a <- Y - bhat_1*X1
+(bhat_2 <- lm(a~X2)$coef[2])
+```
 
 __Part d)__
 
+```{r}
+a <- Y - bhat_2*X2
+(bhat_1 <- lm(a~X1)$coef[2])
+```
 
 __Part e)__
 
+```{r}
+bhat_0 <- bhat_1 <- bhat_2 <- rep(0, 1000)
+for (i in 1:1000) {
+  a <- Y - bhat_1[i] * X1
+  bhat_2[i] <- lm(a ~ X2)$coef[2]
+  a <- Y - bhat_2[i] * X2
+  bhat_0[i] <- lm(a ~ X1)$coef[1]
+  # bhat_1 will end up with 1001 terms
+  bhat_1[i+1] <- lm(a ~ X1)$coef[2]
+}
+
+# make plots
+require(ggplot2)
+require(reshape2)
+mydf <- data.frame(Iteration=1:1000, bhat_0, bhat_1=bhat_1[-1], bhat_2)
+mmydf <- melt(mydf, id.vars="Iteration")
+ggplot(mmydf, aes(x=Iteration, y=value, group=variable, col=variable)) + 
+  geom_line(size=1) + ggtitle("Plot of beta estimates by Iteration")
+```
 
 __Part f)__
 
+```{r}
+fit.lm <- lm(Y ~ X1 + X2)
+coef(fit.lm)
+plot(bhat_0, type="l", col="red", lwd=2, xlab="Iterations", 
+     ylab="beta estimates", ylim=c(-5,10))
+lines(bhat_1[-1], col="green", lwd=2)
+lines(bhat_2, col="blue", lwd=2)
+abline(h=coef(fit.lm)[1], lty="dashed", lwd=3, col="brown")
+abline(h=coef(fit.lm)[2], lty="dashed", lwd=3, col="darkgreen")
+abline(h=coef(fit.lm)[3], lty="dashed", lwd=3, col="darkblue")
+legend(x=600,y=9.7, c("bhat_0", "bhat_1", "bhat_2", "multiple regression"),
+       lty = c(1,1,1,2), 
+       col = c("red","green","blue","gray"))
+```
 
 __Part g)__
 
+```{r}
+head(mydf)
+```
 
+One iteration seemed to be enough to get a decent fit. After iteration 2, the beta estimates already converged.
 
 ***
 
@@ -194,4 +557,34 @@ __Part g)__
 
 >EXERCISE 12:
 
+```{r}
+set.seed(1)
 
+# create toy example with 100 predictors
+p <- 100   # number of true predictors
+n <- 1000  # number of observations
+betas <- rnorm(p+1)*5  # extra 1 for beta_0
+X <- matrix(rnorm(n*p), ncol=p, nrow=n)
+eps <- rnorm(n, sd=0.5)
+Y <- betas[1] + (X %*% betas[-1]) + eps  # betas will repeat n times
+par(mfrow=c(1,1))
+plot(Y)
+
+# find coef estimates with multiple regression
+fit.lm <- lm(Y~X)
+bhats.lm <- coef(fit.lm)
+
+# run backfitting with 100 iterations
+bhats <- matrix(0, ncol=p, nrow=100)
+mse.error <- rep(0, 100)
+for (i in 1:100) {
+  for (k in 1:p) {
+    a = Y - (X[,-k] %*% bhats[i,-k])
+    bhats[i:100,k] = lm(a ~ X[,k])$coef[2]
+  }
+  mse.error[i] <- mean((Y - (X %*% bhats[i,]))^2)
+}
+plot(1:100, mse.error)
+plot(1:5, mse.error[1:5], type="b")
+# second iteration results were very close to multiple regression
+```
