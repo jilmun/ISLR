@@ -61,7 +61,7 @@ __Part b)__
 __Part c)__ 
 
 * regression
-* inference
+* prediction (predicting the quantitative value of the % change of USD)
 * n = 52 weekly observations
 * p = 3 variables
     * change in the US market
