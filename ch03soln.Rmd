@@ -101,23 +101,60 @@ Using equation (3.4) on page 62, when $x_{i}=\bar{x}$, then $\hat{\beta_{1}}=0$ 
 
 >EXERCISE 7:
 
-[*... will come back to this. maybe.*]
-
 __Given:__
 
-For $\bar{x}=\bar{y}=0$,
+$$ R^{2} = \frac{TSS - RSS}{TSS}$$
 
-$$ R^{2} = \frac{TSS - RSS}{TSS} = 1- \frac{RSS}{TSS} $$
+$$ TSS = \sum_{i=1}^{n} \left ( y_{i}-\bar{y}\right )^{2} $$
+$$ RSS = \sum_{i=1}^{n} \left ( y_{i}-\hat{y}_i\right )^{2} $$
 
-$$ TSS = \sum_{i=1}^{n} \left ( y_{i}-\bar{y}\right )^{2} = \sum_{i=1}^{n} y_{i}^{2} $$
-
-$$ RSS = \sum_{i=1}^{n} \left ( y_{i}-\hat{y_{i}}\right )^{2} = \sum_{i=1}^{n} \left ( y_{i}-\left ( \hat{\beta_{0}} + \hat{\beta_{1}}x_{i} \right )\right )^{2} = \sum_{i=1}^{n} \left ( y_{i}-\left ( \frac{\sum_{j=1}^{n} x_{j}y_{j} }{\sum_{k=1}^{n} x_{k}^{2}} \right ) x_{i} \right )^{2} $$
-
-$$ Cor \left( X, Y\right) = \frac{\sum_{i=1}^{n} x_{i} y_{i}}{\sqrt{\sum_{j=1}^{n}x_{j}^{2} \times \sum_{k=1}^{n}y_{k}^{2}} } $$
+$$ Cor \left( X, Y\right) = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x})(y_{i} - \bar{y})}{\sqrt{\sum_{j=1}^{n}(x_{j} - \bar{x})^{2} \cdot \sum_{k=1}^{n}(y_{k}-\bar{y})^{2}} } $$
 
 __Prove:__
 
 $$ R^{2} = \left[ Cor \left( X, Y\right)\right]^{2} $$
+First, let's prove that (1) $\sum_{i=1}^n (y_i - \hat{y}_i)\hat{y}_i = 0$. Define 
+
+$$
+g(a) := \sum_{i=1}^n (a\hat{y}_i - y_i)^2
+$$
+We know that $\bar{a} = 1$ is a global minimum, because we minimize the expression
+
+$$
+\sum_{i=1}^n (\beta_0 + \beta_1x_i - y_i)^2 
+$$
+when $\beta_0 + \beta_1 x_i = \hat{y}_i$. It's neccessary, therefore, that we have $g'(1) = 0$, that is, 
+
+$$
+g'(1) = 2\sum_{i=1}^n (\hat{y}_i - y_i)\hat{y}_i  = 0 \implies \sum_{i=1}^n (\hat{y}_i - y_i)\hat{y}_i  = 0
+$$
+
+It's easy to conclude that $\sum_{i=1}^n (\hat{y}_i - y_i)(\hat{y}_i - \bar{y})  = 0$. 
+
+Set $\hat{\epsilon}_i = y_i - \hat{y}_i$. Then, 
+
+$$
+\begin{split}
+  \sum_{i=1}^n (y_i - \bar{y})^2 &= \sum_{i=1}^n (\hat{y}_i + \hat{\epsilon}_i - \bar{y})^2 \\
+  &= \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 + 2\hat{\epsilon}_i(\hat{y}_i - \bar{y}) + \hat{\epsilon}_i^2 \\
+  &= \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 + 2\sum_{i=1}^n\hat{\epsilon}_i(\hat{y}_i - \bar{y}) + \sum_{i=1}^n (y_i - \hat{y}_i)^2 \\
+  &= \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 + \sum_{i=1}^n (y_i - \hat{y}_i)^2 \\
+\end{split}
+$$
+using what we've proved in (1). 
+
+So $TSS - RSS = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2$ and 
+
+$$
+\begin{split}
+R^2 &= \frac{TSS - RSS}{TSS} = \frac{\sum_{i=1}^n (\hat{y}_i - \bar{y})^2}{\sum_{i=1}^n (y_i - \bar{y})^2} \\
+&= \frac{\sum_{i=1}^n (\hat{\beta}_0 + \hat{\beta}_1x_i - \bar{y})^2}{\sum_{i=1}^n (y_i - \bar{y})^2} \\
+&= \frac{\sum_{i=1}^n (\bar{y} - \hat{\beta}_1\bar{x} + \hat{\beta}_1x_i - \bar{y})^2}{\sum_{i=1}^n (y_i - \bar{y})^2} \\
+&= \hat{\beta}_1^2\frac{\sum_{i=1}^n (x_i - \bar{x})^2}{\sum_{i=1}^n (y_i - \bar{y})^2} \\
+&= \frac{\left[\sum_{i=1}^{n} (x_{i} - \bar{x})(y_{i} - \bar{y})\right]^2}{\left[\sum_{i=1}^{n}(x_i - \bar{x})^{2}\right]^2 \cdot \sum_{i=1}^{n}(y_i-\bar{y})^{2}}\sum_{i=1}^n (x_i - \bar{x})^2 \\
+&= \left[Cov\left(X,Y\right)\right]^2
+\end{split}
+$$
 
 ***
 ## APPLIED
